@@ -1,0 +1,1 @@
+console.log("Menú principal cargado");

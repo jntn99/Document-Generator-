@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cotización de Concentrados</title>
+</head>
+<body>
+
+  <h1>Cotización de Concentrados</h1>
+
+  <p><a href="index.html">← Volver al menú principal</a></p>
+
+  <h2>Datos generales</h2>
+  <p><strong>Código:</strong> <span id="codigo"></span></p>
+  <p><strong>Cooperativa:</strong> <span id="cooperativa"></span></p>
+  <p><strong>Concentrado:</strong> <span id="concentrado"></span></p>
+  <h2>Ingreso de datos</h2>
+
+<label>Peso bruto kg:</label>
+<input type="number" id="inputPesoBruto" value="20000">
+
+<br><br>
+
+<label>Tara kg:</label>
+<input type="number" id="inputTara" value="0">
+
+<br><br>
+
+<label>Humedad %:</label>
+<input type="number" id="inputHumedad" value="0.1" step="0.01">
+
+<br><br>
+
+<label>Ley Plomo %:</label>
+<input type="number" id="inputLeyPB" value="70">
+
+<br><br>
+
+<label>Ley Plata DM:</label>
+<input type="number" id="inputLeyAG" value="7">
+
+<br><br>
+
+<button id="btnCalcular">Calcular</button>
+
+  <h2>Pesos</h2>
+  <p><strong>Peso bruto:</strong> <span id="pesoBruto"></span> kg</p>
+  <p><strong>Tara:</strong> <span id="tara"></span> kg</p>
+  <p><strong>Humedad:</strong> <span id="humedadKg"></span> kg</p>
+  <p><strong>Peso neto seco:</strong> <span id="pesoNetoSeco"></span> kg</p>
+
+  <h2>Análisis químico</h2>
+  <ul id="listaElementos"></ul>
+
+  <h2>Contenido fino</h2>
+  <ul id="contenidoFino"></ul>
+
+  <h2>Cotizaciones</h2>
+  <ul id="cotizaciones"></ul>
+
+  <h2>Valor bruto</h2>
+  <ul id="valorBruto"></ul>
+
+  <h2>Regalías</h2>
+  <ul id="regalias"></ul>
+
+  <h2>Descuentos</h2>
+  <ul id="descuentos"></ul>
+
+  <h2>Resultado final</h2>
+  <ul id="resultadoFinal"></ul>
+
+  <script src="catalogos/conversiones.js"></script>
+  <script src="catalogos/elementos.js"></script>
+  <script src="catalogos/concentrados.js"></script>
+  <script src="catalogos/cooperativas.js"></script>
+  <script src="catalogos/tablasPago.js"></script>
+  <script src="catalogos/cotizaciones.js"></script>
+  <script src="catalogos/tipoCambio.js"></script>
+  <script src="catalogos/reglasCalculo.js"></script>
+  <script src="catalogos/plantillasLiquidacion.js"></script>
+
+  <script src="js/Concentrados/datos.js"></script>
+  <script src="js/Concentrados/pesos.js"></script>
+  <script src="js/Concentrados/contenidoFino.js"></script>
+  <script src="js/Concentrados/valorBruto.js"></script>
+  <script src="js/Concentrados/regalias.js"></script>
+  <script src="js/Concentrados/descuentos.js"></script>
+  <script src="js/Concentrados/resultado.js"></script>
+  <script src="js/Concentrados/mostrar.js"></script>
+  <script src="js/Concentrados/concentrados.js"></script>
+
+</body>
+</html>
