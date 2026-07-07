@@ -7,7 +7,8 @@ const elementos = [
     unidadContenido: "kg",
     unidadCotizacion: "L.F.",
     tipoCalculoContenido: "PORCENTAJE",
-    tipoCalculoValor: "KG_A_LIBRAS"
+    tipoCalculoValor: "KG_A_LIBRAS",
+    controlMasa: true
   },
   {
     id: "AG",
@@ -17,7 +18,8 @@ const elementos = [
     unidadContenido: "gr",
     unidadCotizacion: "O.T.",
     tipoCalculoContenido: "DECIMARCO",
-    tipoCalculoValor: "GRAMOS_A_ONZAS"
+    tipoCalculoValor: "GRAMOS_A_ONZAS",
+    controlMasa: false
   },
   {
     id: "AU",
@@ -27,7 +29,8 @@ const elementos = [
     unidadContenido: "gr",
     unidadCotizacion: "O.T.",
     tipoCalculoContenido: "GRAMOS_POR_TONELADA",
-    tipoCalculoValor: "GRAMOS_A_ONZAS"
+    tipoCalculoValor: "GRAMOS_A_ONZAS",
+    controlMasa: false
   },
   {
     id: "ZN",
@@ -37,7 +40,8 @@ const elementos = [
     unidadContenido: "kg",
     unidadCotizacion: "L.F.",
     tipoCalculoContenido: "PORCENTAJE",
-    tipoCalculoValor: "KG_A_LIBRAS"
+    tipoCalculoValor: "KG_A_LIBRAS",
+    controlMasa: true
   },
   {
     id: "CU",
@@ -47,7 +51,8 @@ const elementos = [
     unidadContenido: "kg",
     unidadCotizacion: "L.F.",
     tipoCalculoContenido: "PORCENTAJE",
-    tipoCalculoValor: "KG_A_LIBRAS"
+    tipoCalculoValor: "KG_A_LIBRAS",
+    controlMasa: true
   },
   {
     id: "SB",
@@ -57,7 +62,8 @@ const elementos = [
     unidadContenido: "kg",
     unidadCotizacion: "TM",
     tipoCalculoContenido: "PORCENTAJE",
-    tipoCalculoValor: "KG_A_LIBRAS"
+    tipoCalculoValor: "KG_A_LIBRAS",
+    controlMasa: true
   }
 ];
 

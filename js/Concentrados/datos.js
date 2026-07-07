@@ -1,10 +1,17 @@
+const expedienteActual = obtenerExpedienteActual();
+
 var liquidacion = {
-  codigo: "EM-CN5001",
+  codigo: expedienteActual ? expedienteActual.codigo : "EM-CN5001",
   fecha: "2026-07-06",
 
-  plantillaId: localStorage.getItem("plantillaSeleccionadaId") || "PLANTILLA_CONC_PB",
+  plantillaId:
+    (expedienteActual && expedienteActual.plantillaId) ||
+    localStorage.getItem("plantillaSeleccionadaId") ||
+    "PLANTILLA_CONC_PB",
 
-  cooperativaId: "COOP001",
+  cooperativaId:
+    (expedienteActual && expedienteActual.proveedorId) ||
+    "COOP001",
   concentradoId: null,
   elementosPrincipales: [],
   elementosOpcionales: [],
@@ -61,5 +68,20 @@ if (plantillaActual) {
   });
 }
 
-console.log("Plantilla aplicada a la liquidación:", plantillaActual);
-console.log("Datos base de liquidación:", liquidacion);
+if (expedienteActual) {
+  if (expedienteActual.tipoMaterial) {
+    liquidacion.concentradoId = expedienteActual.tipoMaterial;
+  }
+
+  if (expedienteActual.pesos && expedienteActual.pesos.pesoBrutoKg > 0) {
+    liquidacion.pesos = { ...liquidacion.pesos, ...expedienteActual.pesos };
+  }
+
+  if (expedienteActual.analisis && expedienteActual.analisis.length > 0) {
+    liquidacion.analisis = expedienteActual.analisis.map(item => ({ ...item }));
+  }
+}
+
+console.log("Plantilla aplicada a la liquidacion:", plantillaActual);
+console.log("Expediente comercial actual:", expedienteActual);
+console.log("Datos base de liquidacion:", liquidacion);

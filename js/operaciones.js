@@ -34,8 +34,10 @@ btnContinuar.addEventListener("click", function () {
   }
 
   const plantilla = buscarPlantilla(plantillaId);
+  const expediente = crearExpedienteDesdePlantilla(plantilla);
 
   localStorage.setItem("plantillaSeleccionadaId", plantilla.id);
+  guardarExpedienteActual(expediente);
 
   if (plantilla.tipoOperacion === "CONCENTRADO_MINERAL") {
     window.location.href = "concentrados.html";
