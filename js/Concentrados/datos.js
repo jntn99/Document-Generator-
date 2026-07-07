@@ -6,6 +6,8 @@ var liquidacion = {
 
   cooperativaId: "COOP001",
   concentradoId: null,
+  elementosPrincipales: [],
+  elementosOpcionales: [],
 
   pesos: {
     pesoBrutoKg: 20000,
@@ -48,8 +50,10 @@ const plantillaActual = buscarPlantilla(liquidacion.plantillaId);
 
 if (plantillaActual) {
   liquidacion.concentradoId = plantillaActual.concentradoId;
+  liquidacion.elementosPrincipales = plantillaActual.elementosPrincipales || [];
+  liquidacion.elementosOpcionales = plantillaActual.elementosOpcionales || [];
 
-  liquidacion.analisis = plantillaActual.elementos.map(elementoId => {
+  liquidacion.analisis = liquidacion.elementosPrincipales.map(elementoId => {
     return {
       elementoId: elementoId,
       ley: elementoId === "PB" ? 70 : 7

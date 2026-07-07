@@ -10,6 +10,12 @@ const concentrados = [
     nombre: "Concentrado de Oro",
     elementos: ["AU", "AG"],
     activo: true
+  },
+  {
+    id: "CONC_SB",
+    nombre: "Concentrado de Antimonio",
+    elementos: ["SB"],
+    activo: true
   }
 ];
 

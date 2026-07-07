@@ -28,6 +28,36 @@ const elementos = [
     unidadCotizacion: "O.T.",
     tipoCalculoContenido: "GRAMOS_POR_TONELADA",
     tipoCalculoValor: "GRAMOS_A_ONZAS"
+  },
+  {
+    id: "ZN",
+    nombre: "Zinc",
+    simbolo: "Zn",
+    unidadLey: "%",
+    unidadContenido: "kg",
+    unidadCotizacion: "L.F.",
+    tipoCalculoContenido: "PORCENTAJE",
+    tipoCalculoValor: "KG_A_LIBRAS"
+  },
+  {
+    id: "CU",
+    nombre: "Cobre",
+    simbolo: "Cu",
+    unidadLey: "%",
+    unidadContenido: "kg",
+    unidadCotizacion: "L.F.",
+    tipoCalculoContenido: "PORCENTAJE",
+    tipoCalculoValor: "KG_A_LIBRAS"
+  },
+  {
+    id: "SB",
+    nombre: "Antimonio",
+    simbolo: "Sb",
+    unidadLey: "%",
+    unidadContenido: "kg",
+    unidadCotizacion: "TM",
+    tipoCalculoContenido: "PORCENTAJE",
+    tipoCalculoValor: "KG_A_LIBRAS"
   }
 ];
 

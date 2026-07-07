@@ -22,18 +22,14 @@ function mostrarPesos() {
 }
 
 function mostrarElementosDelConcentrado() {
-  const concentrado = buscarConcentrado(liquidacion.concentradoId);
   const lista = document.getElementById("listaElementos");
 
   lista.innerHTML = "";
 
-  concentrado.elementos.forEach(elementoId => {
-    const elemento = buscarElemento(elementoId);
-    const analisisElemento = liquidacion.analisis.find(
-      item => item.elementoId === elementoId
-    );
+  liquidacion.analisis.forEach(analisisElemento => {
+    const elemento = buscarElemento(analisisElemento.elementoId);
 
-    if (!elemento || !analisisElemento) {
+    if (!elemento) {
       return;
     }
 
@@ -52,6 +48,51 @@ function mostrarElementosDelConcentrado() {
 
     lista.appendChild(li);
   });
+}
+
+function mostrarElementosOpcionalesDisponibles() {
+  const select = document.getElementById("selectElementoOpcional");
+  const contenedor = document.getElementById("elementosOpcionales");
+
+  if (!select || !contenedor) {
+    return;
+  }
+
+  const elementosAgregados = liquidacion.analisis.map(item => item.elementoId);
+  const disponibles = liquidacion.elementosOpcionales.filter(
+    elementoId => !elementosAgregados.includes(elementoId)
+  );
+
+  select.innerHTML = "";
+  contenedor.innerHTML = "";
+
+  disponibles.forEach(elementoId => {
+    const elemento = buscarElemento(elementoId);
+
+    if (!elemento) {
+      return;
+    }
+
+    const option = document.createElement("option");
+    option.value = elemento.id;
+    option.textContent =
+      elemento.nombre + " (" + elemento.simbolo + ") - " + elemento.unidadLey;
+
+    select.appendChild(option);
+  });
+
+  if (disponibles.length === 0) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "No hay elementos opcionales disponibles";
+    select.appendChild(option);
+    select.disabled = true;
+    contenedor.textContent = "Todos los elementos opcionales ya fueron agregados.";
+    return;
+  }
+
+  select.disabled = false;
+  contenedor.textContent = "Opcionales disponibles: " + disponibles.join(", ");
 }
 
 function mostrarContenidoFino() {
