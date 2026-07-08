@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Proforma de cotizacion</title>
+</head>
+<body>
+
+  <header>
+    <div id="proformaLogo">MANICONE</div>
+    <h1>Manicone International</h1>
+    <h2 id="proformaTitulo">Proforma de cotizacion</h2>
+  </header>
+
+  <section>
+    <h3>Datos generales</h3>
+    <p><strong>Codigo:</strong> <span id="proformaCodigo"></span></p>
+    <p><strong>Fecha:</strong> <span id="proformaFecha"></span></p>
+    <p><strong>Proveedor:</strong> <span id="proformaProveedor"></span></p>
+    <p><strong>Material:</strong> <span id="proformaMaterial"></span></p>
+    <p><strong>Presentacion:</strong> <span id="proformaPresentacion"></span></p>
+    <p><strong>Modelo de valorizacion:</strong> <span id="proformaModeloValorizacion"></span></p>
+  </section>
+
+  <section>
+    <h3>Resumen de analisis</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Ley</th>
+          <th>Unidad</th>
+        </tr>
+      </thead>
+      <tbody id="proformaAnalisis"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h3>Valor calculado</h3>
+    <p><strong>Valor bruto:</strong> <span id="proformaValorBruto"></span></p>
+    <p><strong>Regalias:</strong> <span id="proformaRegalias"></span></p>
+    <p><strong>Descuentos:</strong> <span id="proformaDescuentos"></span></p>
+    <p><strong>Liquido pagable:</strong> <span id="proformaLiquido"></span></p>
+  </section>
+
+  <section>
+    <h3>Observaciones</h3>
+    <p id="proformaObservaciones"></p>
+  </section>
+
+  <section>
+    <h3>Firmas</h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <td>Manicone International</td>
+          <td>Proveedor</td>
+        </tr>
+        <tr>
+          <td><br><br>Firma autorizada</td>
+          <td><br><br>Firma proveedor</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <script src="catalogos/elementos.js"></script>
+  <script src="catalogos/concentrados.js"></script>
+  <script src="catalogos/cooperativas.js"></script>
+  <script src="catalogos/modelosValorizacion.js"></script>
+  <script src="js/Expedientes/estadosExpediente.js"></script>
+  <script src="js/Expedientes/expedientes.js"></script>
+  <script src="js/Documentos/proformaCotizacion.js"></script>
+
+</body>
+</html>

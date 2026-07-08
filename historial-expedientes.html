@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Historial de cotizaciones - Manicone</title>
+</head>
+<body>
+
+  <header>
+    <h1>Historial de cotizaciones</h1>
+    <a href="index.html">Volver al inicio</a>
+  </header>
+
+  <section>
+    <label for="buscarExpediente">Buscar</label>
+    <input
+      type="search"
+      id="buscarExpediente"
+      placeholder="Codigo, proveedor o material"
+      autocomplete="off"
+    >
+
+    <label for="filtroEstado">Estado</label>
+    <select id="filtroEstado">
+      <option value="TODOS">Todos</option>
+      <option value="PENDIENTES">Pendientes</option>
+      <option value="COTIZACION_ACEPTADA">Aceptados</option>
+      <option value="COTIZACION_RECHAZADA">Rechazados</option>
+      <option value="COTIZACION_VENCIDA">Vencidos</option>
+      <option value="OPERACION_ABIERTA">Operaciones abiertas</option>
+      <option value="OPERACION_CERRADA">Operaciones cerradas</option>
+    </select>
+  </section>
+
+  <section>
+    <p id="mensajeHistorial"></p>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Codigo</th>
+          <th>Proveedor</th>
+          <th>Material</th>
+          <th>Modelo</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Accion</th>
+        </tr>
+      </thead>
+      <tbody id="tablaHistorialExpedientes"></tbody>
+    </table>
+  </section>
+
+  <script src="Catalogos/concentrados.js"></script>
+  <script src="Catalogos/cooperativas.js"></script>
+  <script src="Catalogos/modelosValorizacion.js"></script>
+  <script src="js/Expedientes/estadosExpediente.js"></script>
+  <script src="js/Expedientes/expedientes.js"></script>
+  <script src="js/Expedientes/historialExpedientes.js"></script>
+</body>
+</html>

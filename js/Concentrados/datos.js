@@ -54,11 +54,17 @@ function buscarCotizacion(elementoId) {
 }
 
 const plantillaActual = buscarPlantilla(liquidacion.plantillaId);
+const modeloValorizacionActual =
+  expedienteActual && expedienteActual.modeloValorizacionId
+    ? buscarModeloValorizacion(expedienteActual.modeloValorizacionId)
+    : buscarModeloValorizacionPorPlantilla(liquidacion.plantillaId);
 
 if (plantillaActual) {
   liquidacion.concentradoId = plantillaActual.concentradoId;
-  liquidacion.elementosPrincipales = plantillaActual.elementosPrincipales || [];
-  liquidacion.elementosOpcionales = plantillaActual.elementosOpcionales || [];
+  liquidacion.elementosPrincipales =
+    obtenerElementosPrincipalesModelo(modeloValorizacionActual, plantillaActual);
+  liquidacion.elementosOpcionales =
+    obtenerElementosOpcionalesModelo(modeloValorizacionActual, plantillaActual);
 
   liquidacion.analisis = liquidacion.elementosPrincipales.map(elementoId => {
     return {
@@ -69,8 +75,17 @@ if (plantillaActual) {
 }
 
 if (expedienteActual) {
-  if (expedienteActual.tipoMaterial) {
-    liquidacion.concentradoId = expedienteActual.tipoMaterial;
+  const materialExpediente =
+    expedienteActual.materialId ||
+    (
+      expedienteActual.tipoMaterial !== "MINERAL" &&
+      expedienteActual.tipoMaterial !== "METAL_FISICO"
+        ? expedienteActual.tipoMaterial
+        : ""
+    );
+
+  if (materialExpediente) {
+    liquidacion.concentradoId = materialExpediente;
   }
 
   if (expedienteActual.pesos && expedienteActual.pesos.pesoBrutoKg > 0) {
@@ -83,5 +98,6 @@ if (expedienteActual) {
 }
 
 console.log("Plantilla aplicada a la liquidacion:", plantillaActual);
+console.log("Modelo de valorizacion aplicado:", modeloValorizacionActual);
 console.log("Expediente comercial actual:", expedienteActual);
 console.log("Datos base de liquidacion:", liquidacion);

@@ -10,6 +10,10 @@ function mostrarLiquidacionConcentrados() {
   mostrarRegalias();
   mostrarDescuentos();
   mostrarResultadoFinal();
+
+  if (typeof mostrarExpedienteActual === "function") {
+    mostrarExpedienteActual(expedienteActual);
+  }
 }
 
 function ejecutarCalculoConcentrados() {
@@ -46,6 +50,18 @@ function configurarAccionesConcentrados() {
 
   if (btnCalcular) {
     btnCalcular.addEventListener("click", ejecutarCalculoConcentrados);
+  }
+
+  if (typeof configurarAccionesExpediente === "function") {
+    configurarAccionesExpediente();
+  }
+
+  if (typeof configurarProveedorEditable === "function") {
+    configurarProveedorEditable();
+  }
+
+  if (typeof configurarTituloEditable === "function") {
+    configurarTituloEditable();
   }
 }
 

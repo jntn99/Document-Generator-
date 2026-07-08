@@ -11,6 +11,8 @@ function generarCodigoExpediente() {
 function crearExpedienteBase() {
   return {
     codigo: generarCodigoExpediente(),
+    fechaCreacion: new Date().toISOString(),
+    tituloCotizacion: "",
     estado: ESTADOS_EXPEDIENTE.BORRADOR,
     tipoExpediente: "COMPRA_MINERAL",
 
@@ -18,6 +20,9 @@ function crearExpedienteBase() {
     compradorId: null,
 
     tipoMaterial: "",
+    presentacionMaterial: "",
+    materialId: "",
+    modeloValorizacionId: "",
     plantillaId: "",
 
     datosOferta: {
@@ -61,16 +66,29 @@ function crearExpedienteBase() {
   };
 }
 
-function crearExpedienteDesdePlantilla(plantilla) {
+function obtenerTipoMaterialDesdePlantilla(plantilla) {
+  if (plantilla.tipoOperacion === "METAL_FISICO") {
+    return "METAL_FISICO";
+  }
+
+  return "MINERAL";
+}
+
+function crearExpedienteDesdePlantilla(plantilla, opciones) {
+  const datosSeleccionados = opciones || {};
   const expediente = crearExpedienteBase();
 
   expediente.plantillaId = plantilla.id;
-  expediente.tipoMaterial = plantilla.concentradoId || plantilla.forma || "";
+  expediente.tipoMaterial =
+    datosSeleccionados.tipoMaterial || obtenerTipoMaterialDesdePlantilla(plantilla);
+  expediente.presentacionMaterial = datosSeleccionados.presentacionMaterial || "";
+  expediente.modeloValorizacionId = datosSeleccionados.modeloValorizacionId || "";
+  expediente.materialId = plantilla.concentradoId || plantilla.elementos?.[0] || "";
 
   expediente.historial.push({
     fecha: new Date().toISOString(),
     estado: expediente.estado,
-    descripcion: "Expediente creado desde seleccion de plantilla."
+    descripcion: "Expediente creado desde seleccion de modelo de valorizacion."
   });
 
   return expediente;

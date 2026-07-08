@@ -5,7 +5,12 @@ function calcularValorBruto() {
     const elemento = buscarElemento(item.elementoId);
     const cotizacion = buscarCotizacion(item.elementoId);
 
-    if (!elemento || !cotizacion) {
+    if (!elemento) {
+      return;
+    }
+
+    if (!cotizacion) {
+      console.warn("No existe cotizacion para:", elemento.id);
       return;
     }
 

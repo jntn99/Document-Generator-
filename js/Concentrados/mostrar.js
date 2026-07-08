@@ -1,24 +1,134 @@
+function formatearNumeroRegional(valor, decimales) {
+  return Number(valor || 0).toLocaleString("es-ES", {
+    minimumFractionDigits: decimales,
+    maximumFractionDigits: decimales
+  });
+}
+
+function formatearMonedaRegional(valor) {
+  return "Bs " + formatearNumeroRegional(valor, 2);
+}
+
+function obtenerTituloCotizacionAutomatico() {
+  const simbolos = liquidacion.analisis
+    .map(item => buscarElemento(item.elementoId))
+    .filter(elemento => elemento)
+    .map(elemento => elemento.simbolo);
+
+  return "Cotizacion " + simbolos.join("-");
+}
+
+function mostrarTituloCotizacion() {
+  const inputTitulo = document.getElementById("tituloCotizacion");
+
+  if (!inputTitulo) {
+    return;
+  }
+
+  if (expedienteActual && !expedienteActual.tituloCotizacion) {
+    expedienteActual.tituloCotizacion = obtenerTituloCotizacionAutomatico();
+    guardarExpedienteActual(expedienteActual);
+  }
+
+  inputTitulo.value =
+    (expedienteActual && expedienteActual.tituloCotizacion) ||
+    obtenerTituloCotizacionAutomatico();
+}
+
+function cargarAutocompletadoProveedores() {
+  const lista = document.getElementById("listaProveedores");
+
+  if (!lista) {
+    return;
+  }
+
+  lista.innerHTML = "";
+
+  cooperativas.forEach(cooperativa => {
+    const option = document.createElement("option");
+    option.value = cooperativa.nombre;
+    lista.appendChild(option);
+  });
+}
+
+function actualizarProveedorDesdeInput() {
+  const inputProveedor = document.getElementById("inputProveedor");
+
+  if (!inputProveedor) {
+    return;
+  }
+
+  const texto = inputProveedor.value.trim().toLowerCase();
+  const proveedor = cooperativas.find(
+    item =>
+      item.nombre.toLowerCase() === texto ||
+      item.id.toLowerCase() === texto
+  );
+
+  if (!proveedor) {
+    return;
+  }
+
+  liquidacion.cooperativaId = proveedor.id;
+
+  if (expedienteActual) {
+    expedienteActual.proveedorId = proveedor.id;
+    guardarExpedienteActual(expedienteActual);
+    mostrarExpedienteActual(expedienteActual);
+  }
+}
+
+function configurarProveedorEditable() {
+  const inputProveedor = document.getElementById("inputProveedor");
+
+  if (!inputProveedor) {
+    return;
+  }
+
+  cargarAutocompletadoProveedores();
+  inputProveedor.addEventListener("change", actualizarProveedorDesdeInput);
+}
+
+function configurarTituloEditable() {
+  const inputTitulo = document.getElementById("tituloCotizacion");
+
+  if (!inputTitulo) {
+    return;
+  }
+
+  inputTitulo.addEventListener("change", function () {
+    if (!expedienteActual) {
+      return;
+    }
+
+    expedienteActual.tituloCotizacion = inputTitulo.value.trim();
+    guardarExpedienteActual(expedienteActual);
+  });
+}
+
 function mostrarDatosGenerales() {
   const cooperativa = buscarCooperativa(liquidacion.cooperativaId);
   const concentrado = buscarConcentrado(liquidacion.concentradoId);
 
+  mostrarTituloCotizacion();
   document.getElementById("codigo").textContent = liquidacion.codigo;
   document.getElementById("cooperativa").textContent = cooperativa.nombre;
+  document.getElementById("inputProveedor").value = cooperativa.nombre;
   document.getElementById("concentrado").textContent = concentrado.nombre;
 }
 
 function mostrarPesos() {
   document.getElementById("pesoBruto").textContent =
-    liquidacion.pesos.pesoBrutoKg.toFixed(2);
+    formatearNumeroRegional(liquidacion.pesos.pesoBrutoKg, 2);
 
   document.getElementById("tara").textContent =
-    liquidacion.pesos.taraKg.toFixed(2);
+    formatearNumeroRegional(liquidacion.pesos.taraKg, 2);
 
   document.getElementById("humedadKg").textContent =
-    liquidacion.pesos.humedadKg.toFixed(2);
+    formatearNumeroRegional(liquidacion.pesos.humedadKg, 2);
 
   document.getElementById("pesoNetoSeco").textContent =
-    liquidacion.pesos.pesoNetoSecoKg.toFixed(2);
+    formatearNumeroRegional(liquidacion.pesos.pesoNetoSecoKg, 2);
 }
 
 function mostrarElementosDelConcentrado() {
@@ -40,10 +150,10 @@ function mostrarElementosDelConcentrado() {
       " (" +
       elemento.simbolo +
       ") - Ley: " +
-      analisisElemento.ley +
+      formatearNumeroRegional(analisisElemento.ley, 2) +
       " " +
       elemento.unidadLey +
-      " - Cotización en " +
+      " - Cotizacion en " +
       elemento.unidadCotizacion;
 
     lista.appendChild(li);
@@ -63,7 +173,7 @@ function mostrarContenidoFino() {
       " (" +
       item.simbolo +
       "): " +
-      item.cantidad.toFixed(2) +
+      formatearNumeroRegional(item.cantidad, 2) +
       " " +
       item.unidad;
 
@@ -76,33 +186,45 @@ function mostrarCotizaciones() {
 
   lista.innerHTML = "";
 
-  Object.keys(liquidacion.cotizaciones).forEach(elementoId => {
-    const elemento = buscarElemento(elementoId);
-    const cotizacion = liquidacion.cotizaciones[elementoId];
+  liquidacion.analisis.forEach(analisisElemento => {
+    const elemento = buscarElemento(analisisElemento.elementoId);
+    const cotizacion = liquidacion.cotizaciones[analisisElemento.elementoId];
 
-    if (!elemento || !cotizacion) {
+    if (!elemento) {
       return;
     }
 
     const li = document.createElement("li");
 
-    li.textContent =
-      elemento.nombre +
-      " (" +
-      elemento.simbolo +
-      "): " +
-      cotizacion.valor +
-      " " +
-      cotizacion.unidad;
+    if (!cotizacion) {
+      li.textContent =
+        "Advertencia: falta cotizacion para " +
+        elemento.nombre +
+        " (" +
+        elemento.simbolo +
+        ").";
+      console.warn("Falta cotizacion para:", elemento.id);
+    } else {
+      li.textContent =
+        elemento.nombre +
+        " (" +
+        elemento.simbolo +
+        "): " +
+        formatearNumeroRegional(cotizacion.valor, 2) +
+        " " +
+        cotizacion.unidad;
+    }
 
     lista.appendChild(li);
   });
 
   const dolarOF = document.createElement("li");
-  dolarOF.textContent = "Dólar OF: " + liquidacion.tipoCambio.dolarOF;
+  dolarOF.textContent =
+    "Dolar OF: " + formatearNumeroRegional(liquidacion.tipoCambio.dolarOF, 2);
 
   const dolarCOM = document.createElement("li");
-  dolarCOM.textContent = "Dólar COM: " + liquidacion.tipoCambio.dolarCOM;
+  dolarCOM.textContent =
+    "Dolar COM: " + formatearNumeroRegional(liquidacion.tipoCambio.dolarCOM, 2);
 
   lista.appendChild(dolarOF);
   lista.appendChild(dolarCOM);
@@ -124,14 +246,14 @@ function mostrarValorBruto() {
       item.nombre +
       " (" +
       item.simbolo +
-      "): Bs " +
-      item.valorBob.toFixed(2);
+      "): " +
+      formatearMonedaRegional(item.valorBob);
 
     lista.appendChild(li);
   });
 
   const totalLi = document.createElement("li");
-  totalLi.textContent = "Total valor bruto: Bs " + total.toFixed(2);
+  totalLi.textContent = "Total valor bruto: " + formatearMonedaRegional(total);
 
   lista.appendChild(totalLi);
 }
@@ -152,14 +274,14 @@ function mostrarRegalias() {
       item.nombre +
       " (" +
       item.simbolo +
-      "): Bs " +
-      item.montoBob.toFixed(2);
+      "): " +
+      formatearMonedaRegional(item.montoBob);
 
     lista.appendChild(li);
   });
 
   const totalLi = document.createElement("li");
-  totalLi.textContent = "Total regalías: Bs " + total.toFixed(2);
+  totalLi.textContent = "Total regalias: " + formatearMonedaRegional(total);
 
   lista.appendChild(totalLi);
 }
@@ -178,17 +300,18 @@ function mostrarDescuentos() {
 
     li.textContent =
       item.nombre +
-      ": Bs " +
-      item.montoBob.toFixed(2);
+      ": " +
+      formatearMonedaRegional(item.montoBob);
 
     lista.appendChild(li);
   });
 
   const totalLi = document.createElement("li");
-  totalLi.textContent = "Total descuentos: Bs " + total.toFixed(2);
+  totalLi.textContent = "Total descuentos: " + formatearMonedaRegional(total);
 
   lista.appendChild(totalLi);
 }
+
 function mostrarResultadoFinal() {
   const lista = document.getElementById("resultadoFinal");
 
@@ -196,19 +319,19 @@ function mostrarResultadoFinal() {
 
   const valorBruto = document.createElement("li");
   valorBruto.textContent =
-    "Valor bruto: Bs " + liquidacion.resultado.valorBrutoBob.toFixed(2);
+    "Valor bruto: " + formatearMonedaRegional(liquidacion.resultado.valorBrutoBob);
 
   const regalias = document.createElement("li");
   regalias.textContent =
-    "Regalías: Bs " + liquidacion.resultado.totalRegaliasBob.toFixed(2);
+    "Regalias: " + formatearMonedaRegional(liquidacion.resultado.totalRegaliasBob);
 
   const descuentos = document.createElement("li");
   descuentos.textContent =
-    "Descuentos: Bs " + liquidacion.resultado.totalDescuentosBob.toFixed(2);
+    "Descuentos: " + formatearMonedaRegional(liquidacion.resultado.totalDescuentosBob);
 
   const liquido = document.createElement("li");
   liquido.textContent =
-    "Líquido pagable: Bs " + liquidacion.resultado.liquidoPagableBob.toFixed(2);
+    "Liquido pagable: " + formatearMonedaRegional(liquidacion.resultado.liquidoPagableBob);
 
   lista.appendChild(valorBruto);
   lista.appendChild(regalias);

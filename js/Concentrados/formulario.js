@@ -47,6 +47,33 @@ function obtenerValorFormulario(id) {
   return valor;
 }
 
+function elementoYaEstaEnAnalisis(elementoId) {
+  return liquidacion.analisis.some(item => item.elementoId === elementoId);
+}
+
+function obtenerElementosOpcionalesDisponibles() {
+  return liquidacion.elementosOpcionales.filter(
+    elementoId => !elementoYaEstaEnAnalisis(elementoId)
+  );
+}
+
+function agregarElementoOpcionalSeleccionado() {
+  const select = document.getElementById("selectElementoOpcional");
+
+  if (!select || !select.value || elementoYaEstaEnAnalisis(select.value)) {
+    return;
+  }
+
+  leerFormularioConcentrados();
+
+  liquidacion.analisis.push({
+    elementoId: select.value,
+    ley: 0
+  });
+
+  generarFormularioConcentrados();
+}
+
 function generarFormularioConcentrados() {
   const contenedor = document.getElementById("formularioConcentrados");
 
@@ -109,20 +136,40 @@ function generarFormularioConcentrados() {
   contenedor.appendChild(analisisQuimico);
 
   const opcionales = crearGrupoFormulario("Elementos opcionales");
+  const selectOpcional = document.createElement("select");
   const botonAgregar = document.createElement("button");
-  const mensaje = document.createElement("p");
+  const disponibles = obtenerElementosOpcionalesDisponibles();
 
+  selectOpcional.id = "selectElementoOpcional";
   botonAgregar.id = "btnAgregarElemento";
   botonAgregar.type = "button";
   botonAgregar.textContent = "Agregar elemento";
-  botonAgregar.disabled = true;
-  mensaje.id = "elementosOpcionales";
-  mensaje.textContent =
-    "Disponible para la siguiente fase: " +
-    liquidacion.elementosOpcionales.join(", ");
+  botonAgregar.disabled = disponibles.length === 0;
+  botonAgregar.addEventListener("click", agregarElementoOpcionalSeleccionado);
 
+  const optionInicial = document.createElement("option");
+  optionInicial.value = "";
+  optionInicial.textContent =
+    disponibles.length > 0
+      ? "Seleccione un elemento"
+      : "No hay elementos opcionales disponibles";
+  selectOpcional.appendChild(optionInicial);
+
+  disponibles.forEach(elementoId => {
+    const elemento = buscarElemento(elementoId);
+
+    if (!elemento) {
+      return;
+    }
+
+    const option = document.createElement("option");
+    option.value = elemento.id;
+    option.textContent = elemento.nombre + " (" + elemento.simbolo + ")";
+    selectOpcional.appendChild(option);
+  });
+
+  opcionales.appendChild(selectOpcional);
   opcionales.appendChild(botonAgregar);
-  opcionales.appendChild(mensaje);
   contenedor.appendChild(opcionales);
 }
 

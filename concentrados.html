@@ -2,18 +2,43 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cotización de Concentrados</title>
+  <title>Pantalla interna de cotizacion</title>
 </head>
 <body>
 
-  <h1>Cotización de Concentrados</h1>
+  <h1><input id="tituloCotizacion" type="text" value="Cotizacion"></h1>
 
-  <p><a href="index.html">← Volver al menú principal</a></p>
+  <p><a href="index.html">Volver al menu principal</a></p>
 
   <h2>Datos generales</h2>
-  <p><strong>Código:</strong> <span id="codigo"></span></p>
-  <p><strong>Cooperativa:</strong> <span id="cooperativa"></span></p>
-  <p><strong>Concentrado:</strong> <span id="concentrado"></span></p>
+  <p><strong>Codigo:</strong> <span id="codigo"></span></p>
+  <p>
+    <strong>Proveedor:</strong>
+    <input id="inputProveedor" list="listaProveedores" type="text">
+    <datalist id="listaProveedores"></datalist>
+    <span id="cooperativa" hidden></span>
+  </p>
+  <p><strong>Material:</strong> <span id="concentrado"></span></p>
+
+  <section id="panelExpediente" hidden>
+    <h2>Expediente comercial</h2>
+    <p><strong>Codigo:</strong> <span id="expedienteCodigo"></span></p>
+    <p><strong>Estado:</strong> <span id="expedienteEstado"></span></p>
+    <p><strong>Tipo de material:</strong> <span id="expedienteTipoMaterial"></span></p>
+    <p><strong>Presentacion:</strong> <span id="expedientePresentacion"></span></p>
+    <p><strong>Modelo de valorizacion:</strong> <span id="expedienteModeloValorizacion"></span></p>
+    <p><strong>Proveedor:</strong> <span id="expedienteProveedor"></span></p>
+    <p><strong>Material:</strong> <span id="expedienteMaterial"></span></p>
+    <p><strong>Precio calculado:</strong> <span id="expedientePrecioCalculado"></span></p>
+
+    <button id="btnGuardarCotizacion">Guardar cotizacion</button>
+    <button id="btnRechazarCotizacion">Rechazar cotizacion</button>
+    <button id="btnAceptarCotizacion">Aceptar cotizacion</button>
+    <button id="btnVencerCotizacion">Marcar vencida</button>
+    <button id="btnAbrirOperacion">Abrir operacion</button>
+    <button id="btnGenerarProforma">Generar proforma</button>
+  </section>
+
   <h2>Ingreso de datos</h2>
 
   <div id="formularioConcentrados"></div>
@@ -26,7 +51,7 @@
   <p><strong>Humedad:</strong> <span id="humedadKg"></span> kg</p>
   <p><strong>Peso neto seco:</strong> <span id="pesoNetoSeco"></span> kg</p>
 
-  <h2>Análisis químico</h2>
+  <h2>Analisis quimico</h2>
   <ul id="listaElementos"></ul>
 
   <h2>Contenido fino</h2>
@@ -38,7 +63,7 @@
   <h2>Valor bruto</h2>
   <ul id="valorBruto"></ul>
 
-  <h2>Regalías</h2>
+  <h2>Regalias</h2>
   <ul id="regalias"></ul>
 
   <h2>Descuentos</h2>
@@ -55,11 +80,13 @@
   <script src="catalogos/cotizaciones.js"></script>
   <script src="catalogos/tipoCambio.js"></script>
   <script src="catalogos/reglasCalculo.js"></script>
+  <script src="catalogos/modelosValorizacion.js"></script>
   <script src="catalogos/plantillasLiquidacion.js"></script>
 
   <script src="js/Expedientes/estadosExpediente.js"></script>
   <script src="js/Expedientes/modeloExpediente.js"></script>
   <script src="js/Expedientes/expedientes.js"></script>
+  <script src="js/Expedientes/vistaExpediente.js"></script>
 
   <script src="js/Concentrados/datos.js"></script>
   <script src="js/Concentrados/pesos.js"></script>

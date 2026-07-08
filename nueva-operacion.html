@@ -2,32 +2,39 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Nueva Operación - Manicone</title>
+  <title>Nueva cotizacion - Manicone</title>
 </head>
 <body>
 
-  <h1>Nueva operación</h1>
+  <h1>Nueva cotizacion</h1>
 
-  <p><a href="index.html">← Volver al menú principal</a></p>
+  <p><a href="index.html">Volver al menu principal</a></p>
 
-  <h2>1. Elegir categoría</h2>
+  <h2>1. Elegir tipo de material</h2>
 
-  <select id="tipoOperacion">
-    <option value="">Seleccione una categoría</option>
-    <option value="CONCENTRADO_MINERAL">Concentrado mineral</option>
-    <option value="METAL_FISICO">Metal físico</option>
+  <select id="tipoMaterial">
+    <option value="">Seleccione un tipo</option>
+    <option value="MINERAL">Mineral</option>
+    <option value="METAL_FISICO">Metal fisico</option>
   </select>
 
-  <h2>2. Elegir plantilla</h2>
+  <h2>2. Elegir presentacion</h2>
 
-  <select id="plantilla">
-    <option value="">Seleccione una plantilla</option>
+  <select id="presentacionMaterial">
+    <option value="">Seleccione una presentacion</option>
+  </select>
+
+  <h2>3. Elegir modelo de valorizacion</h2>
+
+  <select id="modeloValorizacion">
+    <option value="">Seleccione un modelo de valorizacion</option>
   </select>
 
   <br><br>
 
-  <button id="btnContinuar">Continuar</button>
+  <button id="btnContinuar">Crear expediente</button>
 
+  <script src="catalogos/modelosValorizacion.js"></script>
   <script src="catalogos/plantillasLiquidacion.js"></script>
   <script src="js/Expedientes/estadosExpediente.js"></script>
   <script src="js/Expedientes/modeloExpediente.js"></script>
