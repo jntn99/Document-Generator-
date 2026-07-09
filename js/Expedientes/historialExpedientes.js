@@ -8,6 +8,10 @@ const ESTADOS_PENDIENTES = [
 ];
 
 function obtenerNombreEstado(estado) {
+  const estadoNormalizado =
+    estado === "OPERACION_CERRADA" || estado === "CERRADA"
+      ? "COMPRA_FINALIZADA"
+      : estado;
   const nombres = {
     BORRADOR: "Pendiente",
     COTIZACION_GENERADA: "Pendiente",
@@ -15,12 +19,12 @@ function obtenerNombreEstado(estado) {
     COTIZACION_ACEPTADA: "Aceptado",
     COTIZACION_RECHAZADA: "Rechazado",
     COTIZACION_VENCIDA: "Vencido",
+    CANCELADA: "Cancelada",
     OPERACION_ABIERTA: "Operacion abierta",
-    OPERACION_CERRADA: "Operacion cerrada",
-    CANCELADA: "Cancelada"
+    COMPRA_FINALIZADA: "Compra finalizada"
   };
 
-  return nombres[estado] || "Pendiente";
+  return nombres[estadoNormalizado] || "Pendiente";
 }
 
 function buscarProveedorExpediente(expediente) {
@@ -95,7 +99,11 @@ function formatearFechaHistorial(fecha) {
 }
 
 function expedienteCoincideConFiltro(expediente, filtroEstado) {
-  const estado = expediente.estado || ESTADOS_EXPEDIENTE.BORRADOR;
+  const estadoOriginal = expediente.estado || ESTADOS_EXPEDIENTE.BORRADOR;
+  const estado =
+    estadoOriginal === "OPERACION_CERRADA" || estadoOriginal === "CERRADA"
+      ? "COMPRA_FINALIZADA"
+      : estadoOriginal;
 
   if (filtroEstado === FILTRO_TODOS) {
     return true;
@@ -157,7 +165,7 @@ function crearCeldaHistorial(texto) {
 
 function obtenerRutaExpediente(expediente) {
   if (expediente.tipoMaterial === "METAL_FISICO") {
-    return "lingotes.html";
+    return "metales.html";
   }
 
   return "concentrados.html";

@@ -1,16 +1,21 @@
 function calcularDescuentos() {
-  const totalValorBruto = liquidacion.valorBruto.reduce(
-    (total, item) => total + item.valorBob,
+  const totalBaseDescuentos = (
+    liquidacion.valorPagable && liquidacion.valorPagable.length > 0
+      ? liquidacion.valorPagable
+      : liquidacion.valorBruto.map(item => ({ valorPagableBob: item.valorBob }))
+  ).reduce(
+    (total, item) => total + item.valorPagableBob,
     0
   );
 
-  const cns = totalValorBruto * 0.018;
-  const fedecomin = totalValorBruto * 0.0035;
-  const administracion = totalValorBruto * 0.01;
+  const descuentosConfigurados =
+    typeof obtenerDescuentosConfiguracion === "function"
+      ? obtenerDescuentosConfiguracion()
+      : [];
 
-  liquidacion.descuentos = [
-    { nombre: "CNS", porcentaje: 0.018, montoBob: cns },
-    { nombre: "FEDECOMIN", porcentaje: 0.0035, montoBob: fedecomin },
-    { nombre: "Administración", porcentaje: 0.01, montoBob: administracion }
-  ];
+  liquidacion.descuentos = descuentosConfigurados.map(descuento => ({
+    nombre: descuento.nombre,
+    porcentaje: descuento.porcentaje,
+    montoBob: totalBaseDescuentos * descuento.porcentaje
+  }));
 }

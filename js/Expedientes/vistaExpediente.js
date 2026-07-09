@@ -57,6 +57,7 @@ function formatearPresentacionExpediente(presentacionMaterial) {
     RELAVE: "Relave",
     LINGOTE: "Lingote",
     PEPAS: "Pepas",
+    GRANALLA: "Granalla",
     GRANALLADO: "Granallado",
     POLVO: "Polvo",
     SCRAP: "Scrap",
@@ -144,14 +145,69 @@ function mostrarExpedienteActual(expediente) {
 }
 
 function actualizarEstadoBotonesExpediente(expediente) {
-  const btnAbrirOperacion = document.getElementById("btnAbrirOperacion");
-
-  if (!btnAbrirOperacion || !expediente) {
+  if (!expediente) {
     return;
   }
 
-  btnAbrirOperacion.disabled =
-    expediente.estado !== ESTADOS_EXPEDIENTE.COTIZACION_ACEPTADA;
+  const estado = expediente.estado || ESTADOS_EXPEDIENTE.BORRADOR;
+  const botonesPorEstado = {
+    BORRADOR: ["btnGuardarCotizacion", "btnCalcular", "btnGenerarProforma"],
+    COTIZACION_GENERADA: [
+      "btnMarcarNegociacion",
+      "btnAceptarCotizacion",
+      "btnRechazarCotizacion",
+      "btnVencerCotizacion",
+      "btnGenerarProforma"
+    ],
+    EN_NEGOCIACION: [
+      "btnAceptarCotizacion",
+      "btnRechazarCotizacion",
+      "btnVencerCotizacion",
+      "btnGenerarProforma"
+    ],
+    COTIZACION_ACEPTADA: ["btnAbrirOperacion", "btnGenerarProforma"],
+    OPERACION_ABIERTA: ["btnFinalizarCompra", "btnGenerarProforma"],
+    COMPRA_FINALIZADA: ["btnGenerarProforma"],
+    COTIZACION_RECHAZADA: ["btnGenerarProforma"],
+    COTIZACION_VENCIDA: ["btnGenerarProforma"],
+    CANCELADA: []
+  };
+  const todos = [
+    "btnGuardarCotizacion",
+    "btnCalcular",
+    "btnGenerarProforma",
+    "btnMarcarNegociacion",
+    "btnAceptarCotizacion",
+    "btnRechazarCotizacion",
+    "btnVencerCotizacion",
+    "btnAbrirOperacion",
+    "btnFinalizarCompra"
+  ];
+  const visibles = botonesPorEstado[estado] || [];
+
+  todos.forEach(id => {
+    const boton = document.getElementById(id);
+
+    if (boton) {
+      boton.hidden = !visibles.includes(id);
+      boton.disabled = !visibles.includes(id);
+    }
+  });
+
+  const edicionPermitida = estado === ESTADOS_EXPEDIENTE.BORRADOR;
+  document
+    .querySelectorAll("#formularioConcentrados input, #formularioConcentrados select, #formularioConcentrados textarea")
+    .forEach(control => {
+      control.disabled = !edicionPermitida;
+    });
+
+  ["tituloCotizacion", "inputProveedor"].forEach(id => {
+    const control = document.getElementById(id);
+
+    if (control) {
+      control.disabled = !edicionPermitida;
+    }
+  });
 }
 
 function refrescarExpedienteActual() {
@@ -176,6 +232,11 @@ function aceptarCotizacionDesdePantalla() {
   refrescarExpedienteActual();
 }
 
+function marcarNegociacionDesdePantalla() {
+  marcarCotizacionEnNegociacion(expedienteActual);
+  refrescarExpedienteActual();
+}
+
 function vencerCotizacionDesdePantalla() {
   marcarCotizacionVencida(expedienteActual);
   refrescarExpedienteActual();
@@ -191,10 +252,23 @@ function abrirOperacionDesdePantalla() {
   refrescarExpedienteActual();
 }
 
+function finalizarCompraDesdePantalla() {
+  if (expedienteActual.estado !== ESTADOS_EXPEDIENTE.OPERACION_ABIERTA) {
+    alert("Primero debe abrir la operacion.");
+    return;
+  }
+
+  registrarCompraFinalizada(expedienteActual);
+  refrescarExpedienteActual();
+}
+
 function generarProformaDesdePantalla() {
   ejecutarCalculoConcentrados();
   guardarCotizacionExpediente(expedienteActual);
   refrescarExpedienteActual();
+  if (expedienteActual && typeof registrarProformaGenerada === "function") {
+    registrarProformaGenerada(expedienteActual);
+  }
   window.location.href = "proforma-cotizacion.html";
 }
 
@@ -205,10 +279,12 @@ function configurarAccionesExpediente() {
 
   const acciones = [
     ["btnGuardarCotizacion", guardarCotizacionDesdePantalla],
+    ["btnMarcarNegociacion", marcarNegociacionDesdePantalla],
     ["btnRechazarCotizacion", rechazarCotizacionDesdePantalla],
     ["btnAceptarCotizacion", aceptarCotizacionDesdePantalla],
     ["btnVencerCotizacion", vencerCotizacionDesdePantalla],
     ["btnAbrirOperacion", abrirOperacionDesdePantalla],
+    ["btnFinalizarCompra", finalizarCompraDesdePantalla],
     ["btnGenerarProforma", generarProformaDesdePantalla]
   ];
 

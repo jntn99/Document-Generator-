@@ -16,23 +16,114 @@
     <h3>Datos generales</h3>
     <p><strong>Codigo:</strong> <span id="proformaCodigo"></span></p>
     <p><strong>Fecha:</strong> <span id="proformaFecha"></span></p>
-    <p><strong>Proveedor:</strong> <span id="proformaProveedor"></span></p>
-    <p><strong>Material:</strong> <span id="proformaMaterial"></span></p>
-    <p><strong>Presentacion:</strong> <span id="proformaPresentacion"></span></p>
-    <p><strong>Modelo de valorizacion:</strong> <span id="proformaModeloValorizacion"></span></p>
+    <p data-opcional-proforma><strong>Proveedor:</strong> <span id="proformaProveedor"></span></p>
+    <p data-opcional-proforma><strong>Vendedor:</strong> <span id="proformaVendedor"></span></p>
+    <p data-opcional-proforma><strong>Documento de identidad:</strong> <span id="proformaDocumentoIdentidad"></span></p>
+    <p data-opcional-proforma><strong>Nro credencial:</strong> <span id="proformaCredencialNumero"></span></p>
+    <p data-opcional-proforma><strong>Cooperativa emisora:</strong> <span id="proformaCredencialEmisora"></span></p>
+    <p data-opcional-proforma><strong>Procedencia:</strong> <span id="proformaOrigenMaterial"></span></p>
+    <p data-opcional-proforma><strong>Tipo de operacion:</strong> <span id="proformaTipoOperacion"></span></p>
+    <p data-opcional-proforma><strong>Material:</strong> <span id="proformaMaterial"></span></p>
+    <p data-opcional-proforma><strong>Presentacion:</strong> <span id="proformaPresentacion"></span></p>
+    <p data-opcional-proforma><strong>Modelo de valorizacion:</strong> <span id="proformaModeloValorizacion"></span></p>
   </section>
 
-  <section>
-    <h3>Resumen de analisis</h3>
+  <section id="seccionPesosProforma">
+    <h3>Pesos</h3>
+    <p><strong>Peso bruto:</strong> <span id="proformaPesoBruto"></span> kg</p>
+    <p><strong>Tara:</strong> <span id="proformaTara"></span> kg</p>
+    <p><strong>Humedad:</strong> <span id="proformaHumedad"></span> kg</p>
+    <p><strong>Peso neto seco:</strong> <span id="proformaPesoNetoSeco"></span> kg</p>
+  </section>
+
+  <section id="seccionItemsMetalProforma" style="display: none;">
+    <h3>Items de metal fisico</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Metal</th>
+          <th>Presentacion</th>
+          <th>Peso gr</th>
+          <th>Lecturas XRF</th>
+          <th>Pureza promedio</th>
+          <th>Cotizacion</th>
+          <th>Tipo de cambio</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="proformaItemsMetal"></tbody>
+    </table>
+  </section>
+
+  <section id="seccionAnalisisProforma">
+    <h3>Analisis quimico</h3>
     <table border="1">
       <thead>
         <tr>
           <th>Elemento</th>
           <th>Ley</th>
           <th>Unidad</th>
+          <th>Fino</th>
+          <th>Unidad cotizacion</th>
         </tr>
       </thead>
       <tbody id="proformaAnalisis"></tbody>
+    </table>
+  </section>
+
+  <section id="seccionCotizacionesProforma">
+    <h3>Cotizaciones utilizadas</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Precio internacional</th>
+          <th>Unidad</th>
+          <th>Tipo de cambio</th>
+        </tr>
+      </thead>
+      <tbody id="proformaCotizaciones"></tbody>
+    </table>
+  </section>
+
+  <section id="seccionValorBrutoDetalleProforma">
+    <h3>Valor bruto</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Valor bruto</th>
+        </tr>
+      </thead>
+      <tbody id="proformaValorBrutoDetalle"></tbody>
+    </table>
+  </section>
+
+  <section id="seccionRegaliasProforma">
+    <h3>Regalias</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Alicuota</th>
+          <th>Regalia</th>
+        </tr>
+      </thead>
+      <tbody id="proformaRegaliasDetalle"></tbody>
+    </table>
+  </section>
+
+  <section id="seccionDescuentosProforma">
+    <h3>Descuentos</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+      <tbody id="proformaDescuentosDetalle"></tbody>
     </table>
   </section>
 
@@ -69,6 +160,8 @@
   <script src="catalogos/concentrados.js"></script>
   <script src="catalogos/cooperativas.js"></script>
   <script src="catalogos/modelosValorizacion.js"></script>
+  <script src="catalogos/metalesFisicos.js"></script>
+  <script src="catalogos/presentacionesMetal.js"></script>
   <script src="js/Expedientes/estadosExpediente.js"></script>
   <script src="js/Expedientes/expedientes.js"></script>
   <script src="js/Documentos/proformaCotizacion.js"></script>

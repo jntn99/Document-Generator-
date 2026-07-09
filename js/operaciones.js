@@ -12,7 +12,7 @@ const PRESENTACIONES_POR_TIPO_MATERIAL = {
   METAL_FISICO: [
     { id: "LINGOTE", nombre: "Lingote" },
     { id: "PEPAS", nombre: "Pepas" },
-    { id: "GRANALLADO", nombre: "Granallado" },
+    { id: "GRANALLA", nombre: "Granalla" },
     { id: "POLVO", nombre: "Polvo" },
     { id: "SCRAP", nombre: "Scrap" },
     { id: "OTRO", nombre: "Otro" }
@@ -120,6 +120,6 @@ btnContinuar.addEventListener("click", function () {
   }
 
   if (plantilla.tipoOperacion === "METAL_FISICO") {
-    window.location.href = "lingotes.html";
+    window.location.href = "metales.html";
   }
 });

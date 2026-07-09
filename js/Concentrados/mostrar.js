@@ -9,6 +9,33 @@ function formatearMonedaRegional(valor) {
   return "Bs " + formatearNumeroRegional(valor, 2);
 }
 
+var usuarioActual =
+  typeof window !== "undefined" && window.usuarioActual
+    ? window.usuarioActual
+    : { rol: "OPERADOR" };
+
+function puedeVerDetalleInterno() {
+  return usuarioActual && usuarioActual.rol === "ADMIN";
+}
+
+function mostrarBloqueInterno(idLista, visible) {
+  const lista = document.getElementById(idLista);
+
+  if (!lista) {
+    return;
+  }
+
+  lista.hidden = !visible;
+
+  if (lista.previousElementSibling) {
+    lista.previousElementSibling.hidden = !visible;
+  }
+}
+
+function aplicarVisibilidadDetalleInterno() {
+  mostrarBloqueInterno("valorPagable", puedeVerDetalleInterno());
+}
+
 function obtenerTituloCotizacionAutomatico() {
   const simbolos = liquidacion.analisis
     .map(item => buscarElemento(item.elementoId))
@@ -138,6 +165,9 @@ function mostrarElementosDelConcentrado() {
 
   liquidacion.analisis.forEach(analisisElemento => {
     const elemento = buscarElemento(analisisElemento.elementoId);
+    const contenido = liquidacion.contenidoFino.find(
+      item => item.elementoId === analisisElemento.elementoId
+    );
 
     if (!elemento) {
       return;
@@ -153,6 +183,10 @@ function mostrarElementosDelConcentrado() {
       formatearNumeroRegional(analisisElemento.ley, 2) +
       " " +
       elemento.unidadLey +
+      " - Fino: " +
+      formatearNumeroRegional(contenido ? contenido.cantidad : 0, 2) +
+      " " +
+      (contenido ? contenido.unidad : elemento.unidadContenido) +
       " - Cotizacion en " +
       elemento.unidadCotizacion;
 
@@ -212,7 +246,9 @@ function mostrarCotizaciones() {
         "): " +
         formatearNumeroRegional(cotizacion.valor, 2) +
         " " +
-        cotizacion.unidad;
+        cotizacion.unidad +
+        " - TC: " +
+        formatearNumeroRegional(liquidacion.tipoCambio.dolarOF, 2);
     }
 
     lista.appendChild(li);
@@ -258,6 +294,41 @@ function mostrarValorBruto() {
   lista.appendChild(totalLi);
 }
 
+function mostrarValorPagable() {
+  const lista = document.getElementById("valorPagable");
+
+  if (!lista) {
+    return;
+  }
+
+  lista.innerHTML = "";
+
+  let total = 0;
+
+  (liquidacion.valorPagable || []).forEach(item => {
+    total += item.valorPagableBob;
+
+    const li = document.createElement("li");
+
+    li.textContent =
+      item.nombre +
+      " (" +
+      item.simbolo +
+      "): " +
+      formatearMonedaRegional(item.valorPagableBob) +
+      " (" +
+      formatearNumeroRegional(item.porcentajePago * 100, 2) +
+      "%)";
+
+    lista.appendChild(li);
+  });
+
+  const totalLi = document.createElement("li");
+  totalLi.textContent = "Total valor pagable: " + formatearMonedaRegional(total);
+
+  lista.appendChild(totalLi);
+}
+
 function mostrarRegalias() {
   const lista = document.getElementById("regalias");
 
@@ -275,6 +346,8 @@ function mostrarRegalias() {
       " (" +
       item.simbolo +
       "): " +
+      formatearNumeroRegional(item.alicuota * 100, 2) +
+      "% - " +
       formatearMonedaRegional(item.montoBob);
 
     lista.appendChild(li);
@@ -317,6 +390,10 @@ function mostrarResultadoFinal() {
 
   lista.innerHTML = "";
 
+  const liquido = document.createElement("li");
+  liquido.textContent =
+    "Liquido pagable: " + formatearMonedaRegional(liquidacion.resultado.liquidoPagableBob);
+
   const valorBruto = document.createElement("li");
   valorBruto.textContent =
     "Valor bruto: " + formatearMonedaRegional(liquidacion.resultado.valorBrutoBob);
@@ -329,12 +406,9 @@ function mostrarResultadoFinal() {
   descuentos.textContent =
     "Descuentos: " + formatearMonedaRegional(liquidacion.resultado.totalDescuentosBob);
 
-  const liquido = document.createElement("li");
-  liquido.textContent =
-    "Liquido pagable: " + formatearMonedaRegional(liquidacion.resultado.liquidoPagableBob);
-
   lista.appendChild(valorBruto);
   lista.appendChild(regalias);
   lista.appendChild(descuentos);
   lista.appendChild(liquido);
+  aplicarVisibilidadDetalleInterno();
 }

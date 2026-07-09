@@ -1,3 +1,25 @@
+var usuarioActual =
+  typeof usuarioActual !== "undefined"
+    ? usuarioActual
+    : {
+        id: "USR_TEMP",
+        nombre: "Usuario temporal",
+        rol: "OPERADOR"
+      };
+
+function crearAuditoriaBase() {
+  return {
+    creadoPor: usuarioActual.id,
+    creadoPorNombre: usuarioActual.nombre,
+    creadoEl: new Date().toISOString(),
+    actualizadoPor: null,
+    actualizadoPorNombre: null,
+    actualizadoEl: null,
+    version: 1,
+    estadoRegistro: "BORRADOR"
+  };
+}
+
 function generarCodigoExpediente() {
   const fecha = new Date();
   const year = fecha.getFullYear();
@@ -12,6 +34,8 @@ function crearExpedienteBase() {
   return {
     codigo: generarCodigoExpediente(),
     fechaCreacion: new Date().toISOString(),
+    creadoPor: usuarioActual.id,
+    creadoPorNombre: usuarioActual.nombre,
     tituloCotizacion: "",
     estado: ESTADOS_EXPEDIENTE.BORRADOR,
     tipoExpediente: "COMPRA_MINERAL",
@@ -62,7 +86,8 @@ function crearExpedienteBase() {
     },
 
     documentos: [],
-    historial: []
+    historial: [],
+    auditoria: crearAuditoriaBase()
   };
 }
 
@@ -88,7 +113,10 @@ function crearExpedienteDesdePlantilla(plantilla, opciones) {
   expediente.historial.push({
     fecha: new Date().toISOString(),
     estado: expediente.estado,
-    descripcion: "Expediente creado desde seleccion de modelo de valorizacion."
+    descripcion: "Expediente creado.",
+    creadoPor: usuarioActual.id,
+    creadoPorNombre: usuarioActual.nombre,
+    resumenCambio: "CREACION:" + expediente.codigo
   });
 
   return expediente;

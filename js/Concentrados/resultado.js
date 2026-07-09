@@ -4,6 +4,11 @@ function calcularResultado() {
     0
   );
 
+  const totalValorPagable = (liquidacion.valorPagable || []).reduce(
+    (total, item) => total + item.valorPagableBob,
+    0
+  );
+
   const totalRegalias = liquidacion.regalias.reduce(
     (total, item) => total + item.montoBob,
     0
@@ -16,8 +21,9 @@ function calcularResultado() {
 
   liquidacion.resultado = {
     valorBrutoBob: totalValorBruto,
+    valorPagableBob: totalValorPagable || totalValorBruto,
     totalRegaliasBob: totalRegalias,
     totalDescuentosBob: totalDescuentos,
-    liquidoPagableBob: totalValorBruto - totalRegalias - totalDescuentos
+    liquidoPagableBob: (totalValorPagable || totalValorBruto) - totalRegalias - totalDescuentos
   };
 }

@@ -32,10 +32,12 @@
     <p><strong>Precio calculado:</strong> <span id="expedientePrecioCalculado"></span></p>
 
     <button id="btnGuardarCotizacion">Guardar cotizacion</button>
+    <button id="btnMarcarNegociacion">Marcar en negociacion</button>
     <button id="btnRechazarCotizacion">Rechazar cotizacion</button>
     <button id="btnAceptarCotizacion">Aceptar cotizacion</button>
     <button id="btnVencerCotizacion">Marcar vencida</button>
     <button id="btnAbrirOperacion">Abrir operacion</button>
+    <button id="btnFinalizarCompra">Registrar compra finalizada</button>
     <button id="btnGenerarProforma">Generar proforma</button>
   </section>
 
@@ -63,6 +65,9 @@
   <h2>Valor bruto</h2>
   <ul id="valorBruto"></ul>
 
+  <h2>Valor pagable</h2>
+  <ul id="valorPagable"></ul>
+
   <h2>Regalias</h2>
   <ul id="regalias"></ul>
 
@@ -72,6 +77,7 @@
   <h2>Resultado final</h2>
   <ul id="resultadoFinal"></ul>
 
+  <script src="js/Configuracion/configuracionComercial.js"></script>
   <script src="catalogos/conversiones.js"></script>
   <script src="catalogos/elementos.js"></script>
   <script src="catalogos/concentrados.js"></script>
@@ -79,6 +85,7 @@
   <script src="catalogos/tablasPago.js"></script>
   <script src="catalogos/cotizaciones.js"></script>
   <script src="catalogos/tipoCambio.js"></script>
+  <script src="js/Servicios/servicioCotizaciones.js"></script>
   <script src="catalogos/reglasCalculo.js"></script>
   <script src="catalogos/modelosValorizacion.js"></script>
   <script src="catalogos/plantillasLiquidacion.js"></script>
@@ -92,6 +99,7 @@
   <script src="js/Concentrados/pesos.js"></script>
   <script src="js/Concentrados/contenidoFino.js"></script>
   <script src="js/Concentrados/valorBruto.js"></script>
+  <script src="js/Concentrados/valorPagable.js"></script>
   <script src="js/Concentrados/regalias.js"></script>
   <script src="js/Concentrados/descuentos.js"></script>
   <script src="js/Concentrados/resultado.js"></script>

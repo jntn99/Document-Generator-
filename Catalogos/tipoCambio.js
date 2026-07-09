@@ -1,6 +1,6 @@
-const tipoCambio = {
-  dolarOF: 6.96,
-  dolarCOM: 9
-};
+const tipoCambio =
+  typeof obtenerTipoCambioConfiguracion === "function"
+    ? obtenerTipoCambioConfiguracion()
+    : { dolarOF: 0, dolarCOM: 0 };
 
 console.log("Tipo de cambio cargado:", tipoCambio);

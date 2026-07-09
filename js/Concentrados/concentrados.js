@@ -7,6 +7,7 @@ function mostrarLiquidacionConcentrados() {
   mostrarContenidoFino();
   mostrarCotizaciones();
   mostrarValorBruto();
+  mostrarValorPagable();
   mostrarRegalias();
   mostrarDescuentos();
   mostrarResultadoFinal();
@@ -33,6 +34,7 @@ function ejecutarCalculoConcentrados() {
   calcularPesos();
   calcularContenidoFino();
   calcularValorBruto();
+  calcularValorPagable();
   calcularRegalias();
   calcularDescuentos();
   calcularResultado();

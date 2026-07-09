@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cotizacion de metales fisicos</title>
+</head>
+<body>
+
+  <h1>Cotizacion de metales fisicos</h1>
+
+  <p><a href="index.html">Volver al menu principal</a></p>
+
+  <section>
+    <h2>Datos generales</h2>
+    <p><strong>Codigo:</strong> <span id="codigoMetal"></span></p>
+    <p><strong>Fecha:</strong> <span id="fechaMetal"></span></p>
+    <p><strong>Proveedor:</strong> <span id="proveedorMetal"></span></p>
+    <p>
+      <label>Tipo de operacion
+        <select id="tipoOperacionMetal">
+          <option value="COTIZACION_PRELIMINAR">Cotizacion preliminar</option>
+          <option value="COMPRA_DIRECTA">Compra directa</option>
+          <option value="LIQUIDACION_FINAL">Liquidacion final</option>
+        </select>
+      </label>
+    </p>
+  </section>
+
+  <section>
+    <h2>Proveedor</h2>
+    <p>
+      <label>Cooperativa / Empresa
+        <input id="proveedorNombreMetal" list="listaCooperativasMetal" type="text">
+      </label>
+      <datalist id="listaCooperativasMetal"></datalist>
+    </p>
+    <p><label>Nombre del vendedor <input id="vendedorNombreMetal" type="text"></label></p>
+    <p><label>Documento de identidad <input id="documentoIdentidadMetal" type="text"></label></p>
+    <p><label>Nro credencial cooperativa <input id="credencialNumeroMetal" type="text"></label></p>
+    <p><label>Cooperativa emisora <input id="credencialEmisoraMetal" type="text"></label></p>
+    <p><label>Origen del material <input id="origenMaterialMetal" type="text"></label></p>
+    <p><label>Observaciones <textarea id="observacionesProveedorMetal"></textarea></label></p>
+  </section>
+
+  <section>
+    <h2>Tipo de cambio utilizado</h2>
+    <p>
+      <label>Dolar OF <input id="tipoCambioOfMetal" type="number" step="0.0001" min="0"></label>
+      <label>Dolar COM <input id="tipoCambioComMetal" type="number" step="0.0001" min="0"></label>
+      <span>Vigencia: <strong id="tipoCambioVigenciaMetal"></strong></span>
+      <span>Fuente: <strong id="tipoCambioFuenteMetal"></strong></span>
+    </p>
+  </section>
+
+  <section>
+    <h2>Ingreso de items</h2>
+    <div id="formularioMetales"></div>
+    <button id="btnAgregarItemMetal" type="button">+ Agregar item</button>
+    <table id="tablaMetales" border="1">
+      <thead>
+        <tr>
+          <th>Nro</th>
+          <th>Metal</th>
+          <th>Presentacion</th>
+          <th>Codigo temporal</th>
+          <th>Peso gr</th>
+          <th>Pureza promedio XRF</th>
+          <th>Descuento %</th>
+          <th>Observaciones</th>
+          <th>Lecturas XRF con taladro</th>
+          <th>Resumen XRF</th>
+          <th>Estado XRF</th>
+          <th>Accion</th>
+        </tr>
+      </thead>
+      <tbody id="tablaItemsMetal"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Resultados</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nro</th>
+          <th>Metal</th>
+          <th>Presentacion</th>
+          <th>Codigo temporal</th>
+          <th>Peso gr</th>
+          <th>Pureza</th>
+          <th>Finos gr</th>
+          <th>Cotizacion</th>
+          <th>T/C</th>
+          <th>Descuento</th>
+          <th>Precio Bs</th>
+          <th>Precio $us</th>
+          <th>Total Bs</th>
+          <th>Total $us</th>
+          <th>Al 90%</th>
+        </tr>
+      </thead>
+      <tbody id="tablaResultadosMetal"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Totales</h2>
+    <p><strong>Total Bs:</strong> <span id="totalBobMetal"></span></p>
+    <p><strong>Total $us:</strong> <span id="totalUsdMetal"></span></p>
+    <p><strong>Total al 90%:</strong> <span id="totalAl90Metal"></span></p>
+  </section>
+
+  <section>
+    <h2>Acciones</h2>
+    <button id="btnCalcularMetales" type="button">Calcular</button>
+    <button id="btnGuardarMetales" type="button">Guardar cotizacion</button>
+    <button id="btnGenerarProformaMetales" type="button">Generar proforma</button>
+    <button id="btnNegociacionMetales" type="button">Marcar en negociacion</button>
+    <button id="btnAceptarMetales" type="button">Aceptar cotizacion</button>
+    <button id="btnRechazarMetales" type="button">Rechazar cotizacion</button>
+    <button id="btnVencerMetales" type="button">Marcar vencida</button>
+    <button id="btnAbrirOperacionMetales" type="button">Abrir operacion</button>
+    <button id="btnFinalizarCompraMetales" type="button">Registrar compra finalizada</button>
+  </section>
+
+  <script src="js/Configuracion/configuracionComercial.js"></script>
+  <script src="catalogos/conversiones.js"></script>
+  <script src="catalogos/cotizaciones.js"></script>
+  <script src="catalogos/tipoCambio.js"></script>
+  <script src="js/Servicios/servicioCotizaciones.js"></script>
+  <script src="catalogos/cooperativas.js"></script>
+  <script src="catalogos/plantillasLiquidacion.js"></script>
+  <script src="catalogos/metalesFisicos.js"></script>
+  <script src="catalogos/presentacionesMetal.js"></script>
+
+  <script src="js/Expedientes/estadosExpediente.js"></script>
+  <script src="js/Expedientes/modeloExpediente.js"></script>
+  <script src="js/Expedientes/expedientes.js"></script>
+
+  <script src="js/Metales/datos.js"></script>
+  <script src="js/Metales/calculos.js"></script>
+  <script src="js/Metales/formulario.js"></script>
+  <script src="js/Metales/mostrar.js"></script>
+  <script src="js/Metales/metales.js"></script>
+
+</body>
+</html>

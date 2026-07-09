@@ -11,19 +11,201 @@
   <p><a href="index.html">Volver al menu principal</a></p>
 
   <section>
-    <h2>Modelos de valorizacion</h2>
+    <h2>Configuracion comercial</h2>
+
+    <h3>Cotizaciones internacionales</h3>
     <table border="1">
       <thead>
         <tr>
+          <th>Elemento</th>
+          <th>Precio</th>
+          <th>Unidad</th>
+          <th>Vigencia</th>
+          <th>Fuente</th>
+          <th>Usuario</th>
+          <th>Actualizacion</th>
+        </tr>
+      </thead>
+      <tbody id="tablaCotizacionesComerciales"></tbody>
+    </table>
+
+    <h3>Tipo de cambio diario</h3>
+    <p>
+      <label>Fecha de vigencia <input id="tipoCambioFechaVigencia" type="date"></label>
+      <label>Oficial <input id="tipoCambioOficial" type="number" step="0.0001" min="0"></label>
+      <label>Comercial <input id="tipoCambioComercial" type="number" step="0.0001" min="0"></label>
+      <label>Fuente / observacion <input id="tipoCambioFuente" type="text"></label>
+      <label>Usuario <input id="tipoCambioUsuario" type="text"></label>
+      <span>Actualizacion: <strong id="tipoCambioFechaHoraActualizacion"></strong></span>
+    </p>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Oficial</th>
+          <th>Comercial</th>
+          <th>Fuente / observacion</th>
+          <th>Usuario</th>
+          <th>Fecha y hora</th>
+        </tr>
+      </thead>
+      <tbody id="historialTipoCambio"></tbody>
+    </table>
+
+    <h3>Parametros generales</h3>
+    <p>
+      <label>Moneda <input id="parametroMoneda" type="text"></label>
+      <label>Decimales <input id="parametroDecimales" type="number" step="1" min="0"></label>
+      <label>Tolerancia leyes % <input id="parametroToleranciaLeyes" type="number" step="0.01" min="0"></label>
+      <label>Humedad maxima % <input id="parametroHumedadMaxima" type="number" step="0.01" min="0"></label>
+    </p>
+
+    <h3>Regalias</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Alicuota %</th>
+        </tr>
+      </thead>
+      <tbody id="tablaRegaliasComerciales"></tbody>
+    </table>
+
+    <h3>Tablas de pago</h3>
+    <p>
+      <label>Clonar desde <select id="clonarTablaPagoOrigen"></select></label>
+      <label>hacia <select id="clonarTablaPagoDestino"></select></label>
+      <button id="btnClonarTablaPago" type="button">Clonar tabla</button>
+    </p>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Modo</th>
+          <th>Pago fijo %</th>
+          <th>Rangos ley / pago</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPagosComerciales"></tbody>
+    </table>
+
+    <h3>Descuentos</h3>
+    <button id="btnAgregarDescuentoComercial" type="button">Agregar descuento</button>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Porcentaje</th>
+          <th>Activo</th>
+          <th>Accion</th>
+        </tr>
+      </thead>
+      <tbody id="tablaDescuentosComerciales"></tbody>
+    </table>
+
+    <p>
+      <button id="btnGuardarConfiguracionComercial" type="button">Guardar configuracion comercial</button>
+      <button id="btnRestablecerConfiguracionComercial" type="button">Restablecer configuracion vacia</button>
+    </p>
+  </section>
+
+  <section>
+    <h2>Modelos de valorizacion</h2>
+    <p>
+      <button id="btnNuevoModeloValorizacion" type="button">Crear modelo</button>
+    </p>
+    <fieldset>
+      <legend>Editar modelo</legend>
+      <p>
+        <label>Codigo <input id="modeloIdConfig" type="text"></label>
+        <label>Nombre visible <input id="modeloNombreConfig" type="text"></label>
+        <label>Tipo de material
+          <select id="modeloTipoMaterialConfig">
+            <option value="MINERAL">Mineral</option>
+            <option value="METAL_FISICO">Metal fisico</option>
+          </select>
+        </label>
+        <label>Presentaciones compatibles <input id="modeloPresentacionesConfig" type="text" placeholder="CONCENTRADO,LINGOTE"></label>
+      </p>
+      <p>
+        <label>Elementos principales <input id="modeloElementosPrincipalesConfig" type="text" placeholder="PB,AG"></label>
+        <label>Elementos opcionales <input id="modeloElementosOpcionalesConfig" type="text" placeholder="ZN,CU"></label>
+        <label>Metodo de valorizacion <input id="modeloMetodoConfig" type="text" placeholder="CONCENTRADO_MINERAL"></label>
+        <label>Plantilla tecnica <input id="modeloPlantillaConfig" type="text" placeholder="PLANTILLA_CONC_PB"></label>
+        <label>Activo <input id="modeloActivoConfig" type="checkbox" checked></label>
+      </p>
+      <p>
+        <button id="btnGuardarModeloValorizacion" type="button">Guardar modelo</button>
+      </p>
+    </fieldset>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Codigo</th>
           <th>Modelo</th>
           <th>Tipo de material</th>
+          <th>Metodo</th>
+          <th>Elementos</th>
+          <th>Presentaciones</th>
           <th>Estado</th>
+          <th>Accion</th>
         </tr>
       </thead>
       <tbody id="tablaModelosValorizacion"></tbody>
     </table>
   </section>
 
+  <section>
+    <h2>Elementos / Minerales</h2>
+    <p>
+      <button id="btnNuevoElementoConfig" type="button">Crear elemento</button>
+    </p>
+    <fieldset>
+      <legend>Editar elemento</legend>
+      <p>
+        <label>Codigo <input id="elementoIdConfig" type="text" placeholder="PB"></label>
+        <label>Nombre <input id="elementoNombreConfig" type="text"></label>
+        <label>Simbolo <input id="elementoSimboloConfig" type="text"></label>
+        <label>Unidad ley/pureza <input id="elementoUnidadLeyConfig" type="text" placeholder="%"></label>
+        <label>Unidad cotizacion <input id="elementoUnidadCotizacionConfig" type="text" placeholder="TM"></label>
+      </p>
+      <p>
+        <label>Unidad contenido <input id="elementoUnidadContenidoConfig" type="text" placeholder="kg"></label>
+        <label>Control de masa <input id="elementoControlMasaConfig" type="checkbox"></label>
+        <label>Clasificacion economica <input id="elementoClasificacionConfig" type="text" placeholder="BASE/PRECIOSO"></label>
+        <label>Activo <input id="elementoActivoConfig" type="checkbox" checked></label>
+      </p>
+      <p>
+        <label>Crear cotizacion <input id="elementoCrearCotizacionConfig" type="checkbox" checked></label>
+        <label>Crear tabla de pago <input id="elementoCrearTablaPagoConfig" type="checkbox"></label>
+        <label>Agregar a modelo <select id="elementoModeloDestinoConfig"></select></label>
+      </p>
+      <p>
+        <button id="btnGuardarElementoConfig" type="button">Guardar elemento</button>
+      </p>
+    </fieldset>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Codigo</th>
+          <th>Nombre</th>
+          <th>Simbolo</th>
+          <th>Unidad ley</th>
+          <th>Unidad cotizacion</th>
+          <th>Control masa</th>
+          <th>Estado</th>
+          <th>Accion</th>
+        </tr>
+      </thead>
+      <tbody id="tablaElementosConfig"></tbody>
+    </table>
+  </section>
+
+  <script src="js/Configuracion/configuracionComercial.js"></script>
+  <script src="js/Configuracion/configuracionComercialVista.js"></script>
+  <script src="catalogos/elementos.js"></script>
   <script src="catalogos/modelosValorizacion.js"></script>
   <script src="js/Configuracion/modelosValorizacionConfig.js"></script>
 

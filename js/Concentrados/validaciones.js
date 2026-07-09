@@ -1,6 +1,11 @@
 function validarSumaPorcentual() {
   let sumaPorcentual = 0;
   const elementosIncluidos = [];
+  const parametros =
+    typeof obtenerParametrosConfiguracionComercial === "function"
+      ? obtenerParametrosConfiguracionComercial()
+      : { toleranciaLeyesPorcentaje: 0.5 };
+  const tolerancia = Number(parametros.toleranciaLeyesPorcentaje) || 0;
 
   liquidacion.analisis.forEach(item => {
     const elemento = buscarElemento(item.elementoId);
@@ -28,7 +33,7 @@ function validarSumaPorcentual() {
     mensajes: []
   };
 
-  if (sumaPorcentual > 100.5) {
+  if (sumaPorcentual > 100 + tolerancia) {
     resultado.estado = "ERROR";
     resultado.mensajes.push(
       "La suma de leyes porcentuales supera el limite permitido. Suma actual: " +
@@ -58,6 +63,22 @@ function validarSumaPorcentual() {
 function validarLiquidacion() {
   const errores = [];
   const advertencias = [];
+  const parametros =
+    typeof obtenerParametrosConfiguracionComercial === "function"
+      ? obtenerParametrosConfiguracionComercial()
+      : { humedadMaximaPorcentaje: 100 };
+  const humedadMaxima = (Number(parametros.humedadMaximaPorcentaje) || 0) / 100;
+  const validacionTipoCambio =
+    typeof validarTipoCambioVigente === "function"
+      ? validarTipoCambioVigente(liquidacion.tipoCambio)
+      : {
+          valido: (liquidacion.tipoCambio.dolarOF || 0) > 0,
+          mensaje: "Debe configurar el tipo de cambio vigente antes de calcular."
+        };
+
+  if (!validacionTipoCambio.valido) {
+    errores.push(validacionTipoCambio.mensaje);
+  }
 
   if (liquidacion.pesos.pesoBrutoKg <= 0) {
     errores.push("El peso bruto debe ser mayor a 0.");
@@ -73,9 +94,13 @@ function validarLiquidacion() {
 
   if (
     liquidacion.pesos.humedadPorcentaje < 0 ||
-    liquidacion.pesos.humedadPorcentaje > 1
+    liquidacion.pesos.humedadPorcentaje > humedadMaxima
   ) {
-    errores.push("La humedad debe estar entre 0% y 100%.");
+    errores.push(
+      "La humedad debe estar entre 0% y " +
+      Number(parametros.humedadMaximaPorcentaje).toFixed(2) +
+      "%."
+    );
   }
 
   const validacionPorcentual = validarSumaPorcentual();
@@ -86,6 +111,24 @@ function validarLiquidacion() {
 
   if (validacionPorcentual.estado === "ADVERTENCIA") {
     advertencias.push(...validacionPorcentual.mensajes);
+  }
+
+  if (typeof obtenerPorcentajePago === "function") {
+    liquidacion.analisis.forEach(item => {
+      try {
+        const porcentajePago = obtenerPorcentajePago(item.elementoId, item.ley);
+
+        if (porcentajePago === 0) {
+          advertencias.push(
+            "El porcentaje de pago para " +
+            item.elementoId +
+            " es 0%. Revisar tabla de pago."
+          );
+        }
+      } catch (error) {
+        errores.push(error.message);
+      }
+    });
   }
 
   return {

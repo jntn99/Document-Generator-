@@ -1,24 +1,28 @@
 function calcularRegalias() {
   liquidacion.regalias = [];
 
-  liquidacion.valorBruto.forEach(item => {
-    let alicuota = 0;
+  const baseRegalias =
+    liquidacion.valorPagable && liquidacion.valorPagable.length > 0
+      ? liquidacion.valorPagable
+      : liquidacion.valorBruto.map(item => ({
+        ...item,
+        valorPagableBob: item.valorBob
+      }));
 
-    if (item.elementoId === "PB") {
-      alicuota = 0.03;
-    }
+  baseRegalias.forEach(item => {
+    const alicuota =
+      typeof obtenerAlicuotaRegaliaConfiguracion === "function"
+        ? obtenerAlicuotaRegaliaConfiguracion(item.elementoId)
+        : 0;
 
-    if (item.elementoId === "AG") {
-      alicuota = 0.036;
-    }
-
-    const montoBob = item.valorBob * alicuota;
+    const montoBob = item.valorPagableBob * alicuota;
 
     liquidacion.regalias.push({
       elementoId: item.elementoId,
       nombre: item.nombre,
       simbolo: item.simbolo,
       alicuota: alicuota,
+      baseBob: item.valorPagableBob,
       montoBob: montoBob
     });
   });

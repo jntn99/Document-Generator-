@@ -67,4 +67,41 @@ const elementos = [
   }
 ];
 
+function obtenerElementosConfigurados() {
+  const guardados = localStorage.getItem("elementosConfigurables");
+
+  if (!guardados) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(guardados);
+  } catch (error) {
+    console.warn("No se pudieron leer elementos configurables:", error);
+    return [];
+  }
+}
+
+function guardarElementosConfigurados(elementosConfigurados) {
+  localStorage.setItem("elementosConfigurables", JSON.stringify(elementosConfigurados || []));
+}
+
+function aplicarElementosConfigurados() {
+  obtenerElementosConfigurados().forEach(elementoConfigurado => {
+    const indice = elementos.findIndex(elemento => elemento.id === elementoConfigurado.id);
+    const normalizado = {
+      ...elementoConfigurado,
+      activo: elementoConfigurado.activo === false ? false : true
+    };
+
+    if (indice >= 0) {
+      elementos[indice] = { ...elementos[indice], ...normalizado };
+    } else {
+      elementos.push(normalizado);
+    }
+  });
+}
+
+aplicarElementosConfigurados();
+
 console.log("Elementos configurables cargados:", elementos);

@@ -32,6 +32,7 @@ var liquidacion = {
 
   contenidoFino: [],
   valorBruto: [],
+  valorPagable: [],
   regalias: [],
   descuentos: [],
   resultado: {}
@@ -50,6 +51,10 @@ function buscarElemento(id) {
 }
 
 function buscarCotizacion(elementoId) {
+  if (typeof obtenerCotizacionPorElemento === "function") {
+    return obtenerCotizacionPorElemento(elementoId);
+  }
+
   return liquidacion.cotizaciones[elementoId];
 }
 
