@@ -8,13 +8,21 @@ var usuarioActual =
       };
 
 function crearAuditoriaBase() {
+  const fecha = new Date().toISOString();
+
   return {
     creadoPor: usuarioActual.id,
     creadoPorNombre: usuarioActual.nombre,
-    creadoEl: new Date().toISOString(),
+    fechaCreacion: fecha,
+    creadoEl: fecha,
     actualizadoPor: null,
     actualizadoPorNombre: null,
     actualizadoEl: null,
+    ultimoModificadoPor: null,
+    ultimoModificadoPorNombre: null,
+    fechaUltimaModificacion: null,
+    responsableActual: usuarioActual.id,
+    responsableActualNombre: usuarioActual.nombre,
     version: 1,
     estadoRegistro: "BORRADOR"
   };
@@ -30,12 +38,60 @@ function generarCodigoExpediente() {
   return "EXP-" + year + "-" + random;
 }
 
+function codigoExpedienteExiste(codigo) {
+  if (
+    typeof localStorage === "undefined" ||
+    typeof CLAVE_HISTORIAL_EXPEDIENTES === "undefined"
+  ) {
+    return false;
+  }
+
+  try {
+    const historial = JSON.parse(
+      localStorage.getItem(CLAVE_HISTORIAL_EXPEDIENTES) || "[]"
+    );
+
+    return Array.isArray(historial) && historial.some(item => item.codigo === codigo);
+  } catch (error) {
+    console.warn("No se pudo verificar unicidad del codigo:", error);
+    return false;
+  }
+}
+
+function generarCodigoExpedienteUnico() {
+  let codigo = generarCodigoExpediente();
+  let intentos = 0;
+
+  while (codigoExpedienteExiste(codigo) && intentos < 20) {
+    codigo = generarCodigoExpediente();
+    intentos += 1;
+  }
+
+  if (codigoExpedienteExiste(codigo)) {
+    codigo =
+      "EXP-" +
+      new Date().getFullYear() +
+      "-" +
+      String(Date.now()).slice(-8);
+  }
+
+  return codigo;
+}
+
 function crearExpedienteBase() {
+  const auditoria = crearAuditoriaBase();
+
   return {
-    codigo: generarCodigoExpediente(),
-    fechaCreacion: new Date().toISOString(),
+    codigo: generarCodigoExpedienteUnico(),
+    fechaCreacion: auditoria.fechaCreacion,
     creadoPor: usuarioActual.id,
     creadoPorNombre: usuarioActual.nombre,
+    ultimoModificadoPor: null,
+    ultimoModificadoPorNombre: null,
+    fechaUltimaModificacion: null,
+    responsableActual: usuarioActual.id,
+    responsableActualNombre: usuarioActual.nombre,
+    version: 1,
     tituloCotizacion: "",
     estado: ESTADOS_EXPEDIENTE.BORRADOR,
     tipoExpediente: "COMPRA_MINERAL",
@@ -87,7 +143,7 @@ function crearExpedienteBase() {
 
     documentos: [],
     historial: [],
-    auditoria: crearAuditoriaBase()
+    auditoria: auditoria
   };
 }
 

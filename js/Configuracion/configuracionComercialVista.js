@@ -70,6 +70,7 @@ function mostrarCotizacionesComerciales(configuracion) {
 }
 
 function mostrarTipoCambioComercial(configuracion) {
+  const tipoCambio = normalizarTipoCambioVigente(configuracion.tipoCambio);
   const fechaVigencia = document.getElementById("tipoCambioFechaVigencia");
   const oficial = document.getElementById("tipoCambioOficial");
   const comercial = document.getElementById("tipoCambioComercial");
@@ -79,27 +80,27 @@ function mostrarTipoCambioComercial(configuracion) {
   const historial = document.getElementById("historialTipoCambio");
 
   if (fechaVigencia) {
-    fechaVigencia.value = configuracion.tipoCambio.fechaVigencia || obtenerFechaConfiguracionComercial();
+    fechaVigencia.value = tipoCambio.fechaVigencia || obtenerFechaConfiguracionComercial();
   }
 
   if (oficial) {
-    oficial.value = configuracion.tipoCambio.oficial;
+    oficial.value = tipoCambio.vigente;
   }
 
   if (comercial) {
-    comercial.value = configuracion.tipoCambio.comercial;
+    comercial.value = tipoCambio.vigente;
   }
 
   if (fuente) {
-    fuente.value = configuracion.tipoCambio.fuenteObservacion || "";
+    fuente.value = tipoCambio.fuenteObservacion || "";
   }
 
   if (usuario) {
-    usuario.value = configuracion.tipoCambio.usuarioActualizacion || "Administrador";
+    usuario.value = tipoCambio.usuarioActualizacion || "Administrador";
   }
 
   if (fechaHora) {
-    fechaHora.textContent = configuracion.tipoCambio.fechaHoraActualizacion || "Sin actualizacion";
+    fechaHora.textContent = tipoCambio.fechaHoraActualizacion || "Sin actualizacion";
   }
 
   if (!historial) {
@@ -108,11 +109,12 @@ function mostrarTipoCambioComercial(configuracion) {
 
   historial.innerHTML = "";
 
-  configuracion.tipoCambio.historial.forEach(item => {
+  tipoCambio.historial.forEach(item => {
+    const itemNormalizado = normalizarTipoCambioVigente(item);
     const fila = document.createElement("tr");
     fila.appendChild(crearCeldaTexto(item.fechaVigencia || item.fechaActualizacion));
-    fila.appendChild(crearCeldaTexto(item.oficial));
-    fila.appendChild(crearCeldaTexto(item.comercial));
+    fila.appendChild(crearCeldaTexto(itemNormalizado.vigente));
+    fila.appendChild(crearCeldaTexto(itemNormalizado.vigente));
     fila.appendChild(crearCeldaTexto(item.fuenteObservacion || ""));
     fila.appendChild(crearCeldaTexto(item.usuario));
     fila.appendChild(crearCeldaTexto(item.fechaHoraActualizacion || item.fechaActualizacion));
@@ -477,12 +479,16 @@ function leerConfiguracionComercialDesdePantalla() {
     obtenerFechaConfiguracionComercial();
   const oficial = Number(document.getElementById("tipoCambioOficial").value) || 0;
   const comercial = Number(document.getElementById("tipoCambioComercial").value) || 0;
+  const vigente = obtenerValorTipoCambioVigente({
+    vigente: oficial,
+    oficial: oficial,
+    comercial: comercial
+  });
   const fuenteObservacion = document.getElementById("tipoCambioFuente").value.trim();
   const usuarioTipoCambio =
     document.getElementById("tipoCambioUsuario").value.trim() || "Administrador";
   const tipoCambioCambio =
-    configuracionActual.tipoCambio.oficial !== oficial ||
-    configuracionActual.tipoCambio.comercial !== comercial ||
+    obtenerValorTipoCambioVigente(configuracionActual.tipoCambio) !== vigente ||
     configuracionActual.tipoCambio.fechaVigencia !== fechaVigencia ||
     configuracionActual.tipoCambio.fuenteObservacion !== fuenteObservacion;
 
@@ -490,10 +496,11 @@ function leerConfiguracionComercialDesdePantalla() {
     ...configuracionActual,
     cotizaciones: leerCotizacionesComerciales(),
     tipoCambio: {
-      oficial: oficial,
-      comercial: comercial,
-      dolarOF: oficial,
-      dolarCOM: comercial,
+      vigente: vigente,
+      oficial: vigente,
+      comercial: vigente,
+      dolarOF: vigente,
+      dolarCOM: vigente,
       fechaVigencia: fechaVigencia,
       fuenteObservacion: fuenteObservacion,
       usuarioActualizacion: usuarioTipoCambio,

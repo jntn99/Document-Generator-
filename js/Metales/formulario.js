@@ -278,17 +278,21 @@ function escribirDatosProveedorMetal() {
 }
 
 function escribirTipoCambioMetal() {
+  cotizacionMetales.tipoCambio =
+    typeof normalizarTipoCambioVigente === "function"
+      ? normalizarTipoCambioVigente(cotizacionMetales.tipoCambio)
+      : cotizacionMetales.tipoCambio;
   const of = document.getElementById("tipoCambioOfMetal");
   const com = document.getElementById("tipoCambioComMetal");
   const vigencia = document.getElementById("tipoCambioVigenciaMetal");
   const fuente = document.getElementById("tipoCambioFuenteMetal");
 
   if (of) {
-    of.value = cotizacionMetales.tipoCambio.dolarOF || cotizacionMetales.tipoCambio.oficial || 0;
+    of.value = cotizacionMetales.tipoCambio.vigente || 0;
   }
 
   if (com) {
-    com.value = cotizacionMetales.tipoCambio.dolarCOM || cotizacionMetales.tipoCambio.comercial || 0;
+    com.value = cotizacionMetales.tipoCambio.vigente || 0;
   }
 
   if (vigencia) {
@@ -303,19 +307,33 @@ function escribirTipoCambioMetal() {
 function leerTipoCambioMetal() {
   const of = document.getElementById("tipoCambioOfMetal");
   const com = document.getElementById("tipoCambioComMetal");
+  const valorOf = of ? Number(of.value) || 0 : 0;
+  const valorCom = com ? Number(com.value) || 0 : 0;
+  const vigente =
+    typeof obtenerValorTipoCambioVigente === "function"
+      ? obtenerValorTipoCambioVigente({
+          vigente: valorOf,
+          oficial: valorOf,
+          comercial: valorCom
+        })
+      : valorOf || valorCom;
 
   if (of) {
-    const valorOf = Number(of.value) || 0;
-    cotizacionMetales.tipoCambio.oficial = valorOf;
-    cotizacionMetales.tipoCambio.dolarOF = valorOf;
+    of.value = vigente;
   }
 
   if (com) {
-    const valorCom = Number(com.value) || 0;
-    cotizacionMetales.tipoCambio.comercial = valorCom;
-    cotizacionMetales.tipoCambio.dolarCOM = valorCom;
+    com.value = vigente;
   }
 
+  cotizacionMetales.tipoCambio = {
+    ...cotizacionMetales.tipoCambio,
+    vigente: vigente,
+    oficial: vigente,
+    comercial: vigente,
+    dolarOF: vigente,
+    dolarCOM: vigente
+  };
   cotizacionMetales.tipoCambio.modificadoTemporalmente = true;
 }
 
@@ -347,6 +365,10 @@ function leerDatosProveedorMetal() {
 
     if (cooperativa) {
       cotizacionMetales.proveedorId = cooperativa.id;
+      cotizacionMetales.proveedor.proveedorId = cooperativa.id;
+      cotizacionMetales.proveedor.cooperativaEmpresa = cooperativa.nombre;
+    } else if (!cotizacionMetales.proveedor.cooperativaEmpresa) {
+      cotizacionMetales.proveedorId = "";
     }
   }
 }
@@ -371,7 +393,7 @@ function leerFormularioMetales() {
       finosGr: 0,
       cotizacion: 0,
       unidadCotizacion: "",
-      tipoCambio: cotizacionMetales.tipoCambio.dolarOF || 0,
+      tipoCambio: cotizacionMetales.tipoCambio.vigente || cotizacionMetales.tipoCambio.dolarOF || 0,
       valorUsd: 0,
       valorBob: 0,
       totalUsd: 0,

@@ -71,7 +71,12 @@ function validarItemMetal(item, indice) {
     );
   }
 
-  if ((cotizacionMetales.tipoCambio.dolarOF || 0) <= 0) {
+  const tipoCambioVigente =
+    typeof normalizarTipoCambioVigente === "function"
+      ? normalizarTipoCambioVigente(cotizacionMetales.tipoCambio)
+      : cotizacionMetales.tipoCambio;
+
+  if ((tipoCambioVigente.vigente || tipoCambioVigente.dolarOF || 0) <= 0) {
     errores.push("El tipo de cambio debe ser mayor a 0.");
   }
 
@@ -114,7 +119,11 @@ function calcularItemMetal(item) {
   const metal = buscarMetalFisico(item.metalId);
   const cotizacion = buscarCotizacionMetal(item.metalId);
   const unidadCotizacion = cotizacion ? cotizacion.unidad : metal.unidadCotizacion;
-  const tipoCambio = cotizacionMetales.tipoCambio.dolarOF || 0;
+  cotizacionMetales.tipoCambio =
+    typeof normalizarTipoCambioVigente === "function"
+      ? normalizarTipoCambioVigente(cotizacionMetales.tipoCambio)
+      : cotizacionMetales.tipoCambio;
+  const tipoCambio = cotizacionMetales.tipoCambio.vigente || cotizacionMetales.tipoCambio.dolarOF || 0;
   const analisisMetalurgico = calcularAnalisisMetalurgico(item.analisisMetalurgico);
   const purezaAplicada = analisisMetalurgico.promedioPureza;
 

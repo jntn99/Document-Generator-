@@ -1,4 +1,12 @@
 const expedienteActual = obtenerExpedienteActual();
+const tipoCambioConcentradosNormalizado =
+  typeof normalizarTipoCambioVigente === "function"
+    ? normalizarTipoCambioVigente(
+        expedienteActual && expedienteActual.tipoCambioUsado
+          ? expedienteActual.tipoCambioUsado
+          : tipoCambio
+      )
+    : tipoCambio;
 
 var liquidacion = {
   codigo: expedienteActual ? expedienteActual.codigo : "EM-CN5001",
@@ -11,6 +19,7 @@ var liquidacion = {
 
   cooperativaId:
     (expedienteActual && expedienteActual.proveedorId) ||
+    (expedienteActual && expedienteActual.proveedorDatos && expedienteActual.proveedorDatos.proveedorId) ||
     "COOP001",
   concentradoId: null,
   elementosPrincipales: [],
@@ -28,7 +37,7 @@ var liquidacion = {
   analisis: [],
 
   cotizaciones: cotizaciones,
-  tipoCambio: tipoCambio,
+  tipoCambio: tipoCambioConcentradosNormalizado,
 
   contenidoFino: [],
   valorBruto: [],

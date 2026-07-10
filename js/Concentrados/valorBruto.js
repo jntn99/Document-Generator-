@@ -1,5 +1,9 @@
 function calcularValorBruto() {
   liquidacion.valorBruto = [];
+  liquidacion.tipoCambio =
+    typeof normalizarTipoCambioVigente === "function"
+      ? normalizarTipoCambioVigente(liquidacion.tipoCambio)
+      : liquidacion.tipoCambio;
 
   liquidacion.contenidoFino.forEach(item => {
     const elemento = buscarElemento(item.elementoId);
@@ -25,7 +29,7 @@ function calcularValorBruto() {
     const valorBob = formula(
       item.cantidad,
       cotizacion.valor,
-      liquidacion.tipoCambio.dolarOF
+      liquidacion.tipoCambio.vigente || liquidacion.tipoCambio.dolarOF
     );
 
     liquidacion.valorBruto.push({

@@ -50,6 +50,7 @@ function crearConfiguracionComercialBase() {
     version: 2,
     cotizaciones: cotizaciones,
     tipoCambio: {
+      vigente: 0,
       oficial: 0,
       comercial: 0,
       dolarOF: 0,
@@ -171,6 +172,46 @@ function normalizarNumeroConfiguracion(valor, respaldo) {
   return Number.isFinite(numero) ? numero : respaldo;
 }
 
+function obtenerValorTipoCambioVigente(tipoCambio) {
+  const origen = tipoCambio || {};
+  const candidatos = [
+    origen.vigente,
+    origen.dolarOF,
+    origen.oficial,
+    origen.dolarCOM,
+    origen.comercial
+  ];
+
+  for (let indice = 0; indice < candidatos.length; indice += 1) {
+    const valor = Number(candidatos[indice]);
+
+    if (Number.isFinite(valor) && valor > 0) {
+      return valor;
+    }
+  }
+
+  return 0;
+}
+
+function normalizarTipoCambioVigente(tipoCambio) {
+  const origen = tipoCambio || {};
+  const vigente = obtenerValorTipoCambioVigente(origen);
+
+  return {
+    ...origen,
+    vigente: vigente,
+    oficial: vigente,
+    comercial: vigente,
+    dolarOF: vigente,
+    dolarCOM: vigente,
+    fechaVigencia: origen.fechaVigencia || obtenerFechaConfiguracionComercial(),
+    fuenteObservacion: origen.fuenteObservacion || "",
+    usuarioActualizacion: origen.usuarioActualizacion || "Administrador",
+    fechaHoraActualizacion: origen.fechaHoraActualizacion || "",
+    historial: Array.isArray(origen.historial) ? origen.historial : []
+  };
+}
+
 function normalizarConfiguracionComercial(configuracion) {
   const base = crearConfiguracionComercialBase();
   const origen = configuracion || {};
@@ -213,27 +254,7 @@ function normalizarConfiguracionComercial(configuracion) {
     };
   });
 
-  normalizada.tipoCambio.oficial = normalizarNumeroConfiguracion(
-    normalizada.tipoCambio.oficial !== undefined
-      ? normalizada.tipoCambio.oficial
-      : normalizada.tipoCambio.dolarOF,
-    0
-  );
-  normalizada.tipoCambio.comercial = normalizarNumeroConfiguracion(
-    normalizada.tipoCambio.comercial !== undefined
-      ? normalizada.tipoCambio.comercial
-      : normalizada.tipoCambio.dolarCOM,
-    0
-  );
-  normalizada.tipoCambio.dolarOF = normalizada.tipoCambio.oficial;
-  normalizada.tipoCambio.dolarCOM = normalizada.tipoCambio.comercial;
-  normalizada.tipoCambio.fechaVigencia =
-    normalizada.tipoCambio.fechaVigencia || obtenerFechaConfiguracionComercial();
-  normalizada.tipoCambio.fuenteObservacion = normalizada.tipoCambio.fuenteObservacion || "";
-  normalizada.tipoCambio.usuarioActualizacion =
-    normalizada.tipoCambio.usuarioActualizacion || "Administrador";
-  normalizada.tipoCambio.fechaHoraActualizacion =
-    normalizada.tipoCambio.fechaHoraActualizacion || "";
+  normalizada.tipoCambio = normalizarTipoCambioVigente(normalizada.tipoCambio);
 
   Object.keys(normalizada.tablasPago).forEach(elementoId => {
     normalizada.tablasPago[elementoId] = normalizarTablaPago(
@@ -342,16 +363,16 @@ function obtenerTipoCambioConfiguracion() {
 }
 
 function validarTipoCambioVigente(tipoCambioEvaluado) {
-  const tipoCambioActual = tipoCambioEvaluado || obtenerTipoCambioConfiguracion();
+  const tipoCambioActual = normalizarTipoCambioVigente(
+    tipoCambioEvaluado || obtenerTipoCambioConfiguracion()
+  );
   const hoy = obtenerFechaConfiguracionComercial();
-  const oficial = Number(tipoCambioActual.dolarOF || tipoCambioActual.oficial) || 0;
-  const comercial = Number(tipoCambioActual.dolarCOM || tipoCambioActual.comercial) || 0;
+  const vigente = Number(tipoCambioActual.vigente) || 0;
 
   return {
     valido:
       tipoCambioActual.fechaVigencia === hoy &&
-      oficial > 0 &&
-      comercial > 0,
+      vigente > 0,
     mensaje: "Debe configurar el tipo de cambio vigente antes de calcular."
   };
 }
@@ -420,17 +441,22 @@ function registrarCambioTipoCambio(configuracion, oficial, comercial, usuario, f
     : [];
   const fecha = fechaVigencia || obtenerFechaConfiguracionComercial();
   const fuente = fuenteObservacion || "";
+  const vigente = obtenerValorTipoCambioVigente({
+    vigente: oficial,
+    oficial: oficial,
+    comercial: comercial
+  });
 
   if (
-    tipoCambioActual.oficial !== oficial ||
-    tipoCambioActual.comercial !== comercial ||
+    obtenerValorTipoCambioVigente(tipoCambioActual) !== vigente ||
     tipoCambioActual.fechaVigencia !== fecha ||
     tipoCambioActual.fuenteObservacion !== fuente
   ) {
     historial.push({
       fechaVigencia: fecha,
-      oficial: oficial,
-      comercial: comercial,
+      vigente: vigente,
+      oficial: vigente,
+      comercial: vigente,
       fuenteObservacion: fuente,
       usuario: usuario || "Administrador",
       fechaActualizacion: obtenerFechaConfiguracionComercial(),

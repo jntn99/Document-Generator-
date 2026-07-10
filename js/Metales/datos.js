@@ -24,6 +24,15 @@ const REGLAS_XRF_METAL = {
   revisarHasta: 8
 };
 
+const tipoCambioMetalesNormalizado =
+  typeof normalizarTipoCambioVigente === "function"
+    ? normalizarTipoCambioVigente(
+        expedienteActual && expedienteActual.tipoCambioUsado
+          ? expedienteActual.tipoCambioUsado
+          : tipoCambio
+      )
+    : tipoCambio;
+
 var cotizacionMetales = {
   codigo: expedienteActual ? expedienteActual.codigo : "MET-0001",
   fecha: new Date().toISOString().slice(0, 10),
@@ -43,6 +52,7 @@ var cotizacionMetales = {
   proveedor: {
     cooperativaEmpresa:
       (expedienteActual && expedienteActual.proveedorDatos && expedienteActual.proveedorDatos.cooperativaEmpresa) ||
+      (expedienteActual && expedienteActual.proveedorId) ||
       "",
     vendedorNombre:
       (expedienteActual && expedienteActual.proveedorDatos && expedienteActual.proveedorDatos.vendedorNombre) ||
@@ -66,7 +76,7 @@ var cotizacionMetales = {
 
   items: [],
 
-  tipoCambio: tipoCambio,
+  tipoCambio: tipoCambioMetalesNormalizado,
   cotizaciones: cotizaciones,
 
   totales: {
@@ -202,7 +212,7 @@ function crearItemMetalBase() {
     finosGr: 0,
     cotizacion: 0,
     unidadCotizacion: metalInicial ? metalInicial.unidadCotizacion : "",
-    tipoCambio: cotizacionMetales.tipoCambio.dolarOF || 0,
+    tipoCambio: cotizacionMetales.tipoCambio.vigente || cotizacionMetales.tipoCambio.dolarOF || 0,
     descuentoPorcentaje: presentacionValida ? presentacionValida.descuentoDefault : 0,
     valorUsd: 0,
     valorBob: 0,

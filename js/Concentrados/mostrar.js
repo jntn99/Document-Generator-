@@ -100,6 +100,14 @@ function actualizarProveedorDesdeInput() {
 
   if (expedienteActual) {
     expedienteActual.proveedorId = proveedor.id;
+    expedienteActual.proveedorDatos = {
+      ...(expedienteActual.proveedorDatos || {}),
+      proveedorId: proveedor.id,
+      cooperativaEmpresa: proveedor.nombre
+    };
+    if (typeof normalizarProveedorExpediente === "function") {
+      normalizarProveedorExpediente(expedienteActual);
+    }
     guardarExpedienteActual(expedienteActual);
     mostrarExpedienteActual(expedienteActual);
   }
@@ -136,12 +144,20 @@ function configurarTituloEditable() {
 function mostrarDatosGenerales() {
   const cooperativa = buscarCooperativa(liquidacion.cooperativaId);
   const concentrado = buscarConcentrado(liquidacion.concentradoId);
+  const nombreProveedor =
+    (cooperativa && cooperativa.nombre) ||
+    (expedienteActual &&
+      expedienteActual.proveedorDatos &&
+      expedienteActual.proveedorDatos.cooperativaEmpresa) ||
+    liquidacion.cooperativaId ||
+    "";
 
   mostrarTituloCotizacion();
   document.getElementById("codigo").textContent = liquidacion.codigo;
-  document.getElementById("cooperativa").textContent = cooperativa.nombre;
-  document.getElementById("inputProveedor").value = cooperativa.nombre;
-  document.getElementById("concentrado").textContent = concentrado.nombre;
+  document.getElementById("cooperativa").textContent = nombreProveedor;
+  document.getElementById("inputProveedor").value = nombreProveedor;
+  document.getElementById("concentrado").textContent =
+    concentrado ? concentrado.nombre : liquidacion.concentradoId || "";
 }
 
 function mostrarPesos() {
@@ -248,7 +264,10 @@ function mostrarCotizaciones() {
         " " +
         cotizacion.unidad +
         " - TC: " +
-        formatearNumeroRegional(liquidacion.tipoCambio.dolarOF, 2);
+        formatearNumeroRegional(
+          liquidacion.tipoCambio.vigente || liquidacion.tipoCambio.dolarOF,
+          2
+        );
     }
 
     lista.appendChild(li);
@@ -256,11 +275,19 @@ function mostrarCotizaciones() {
 
   const dolarOF = document.createElement("li");
   dolarOF.textContent =
-    "Dolar OF: " + formatearNumeroRegional(liquidacion.tipoCambio.dolarOF, 2);
+    "Tipo de cambio vigente: " +
+    formatearNumeroRegional(
+      liquidacion.tipoCambio.vigente || liquidacion.tipoCambio.dolarOF,
+      2
+    );
 
   const dolarCOM = document.createElement("li");
   dolarCOM.textContent =
-    "Dolar COM: " + formatearNumeroRegional(liquidacion.tipoCambio.dolarCOM, 2);
+    "Compatibilidad T/C: " +
+    formatearNumeroRegional(
+      liquidacion.tipoCambio.dolarCOM || liquidacion.tipoCambio.vigente,
+      2
+    );
 
   lista.appendChild(dolarOF);
   lista.appendChild(dolarCOM);

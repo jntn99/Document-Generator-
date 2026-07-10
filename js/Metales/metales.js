@@ -36,11 +36,18 @@ function guardarMetalesEnExpediente() {
   }
 
   actualizarAuditoriaCotizacionMetales();
+  cotizacionMetales.tipoCambio =
+    typeof normalizarTipoCambioVigente === "function"
+      ? normalizarTipoCambioVigente(cotizacionMetales.tipoCambio)
+      : cotizacionMetales.tipoCambio;
 
   expedienteActual.tipoMaterial = "METAL_FISICO";
   expedienteActual.tipoOperacionComercial = cotizacionMetales.tipoOperacionComercial;
   expedienteActual.proveedorId = cotizacionMetales.proveedorId || "";
   expedienteActual.proveedorDatos = { ...cotizacionMetales.proveedor };
+  if (typeof normalizarProveedorExpediente === "function") {
+    normalizarProveedorExpediente(expedienteActual);
+  }
   expedienteActual.itemsCompraMetal = cotizacionMetales.items.map(item => ({ ...item }));
   expedienteActual.tipoCambioUsado = { ...cotizacionMetales.tipoCambio };
   expedienteActual.cotizacionMetal = {
